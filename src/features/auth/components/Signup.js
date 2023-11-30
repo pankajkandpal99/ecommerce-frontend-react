@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { selectCount } from "../../product-list/ProductListSlice";
+import { selectCount } from "../../product/ProductSlice";
 import { Link } from "react-router-dom";
 
 function Signup() {
