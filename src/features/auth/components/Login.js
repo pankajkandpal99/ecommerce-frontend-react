@@ -3,7 +3,7 @@ import { selectCount } from "../../product/ProductSlice";
 import { Link } from "react-router-dom";
 
 function Login() {
-  const count = useSelector(selectCount);
+  const count = useSelector();
   const dispatch = useDispatch();
 
   return (
