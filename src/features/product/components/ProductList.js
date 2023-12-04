@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import {
-  fetchAllProductsAsync,
   fetchProductsByFiltersAsync,
   selectAllProducts,
 } from "../ProductSlice";
@@ -19,7 +19,6 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
-import { Link } from "react-router-dom";
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
@@ -197,29 +196,45 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductList() {
+export default function ProductList() {                // iss component to HomePage ke andar '/' route per call kiya ja ra hai ...
   const dispatch = useDispatch();
   const products = useSelector(selectAllProducts);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filter, setFilter] = useState({});
+  const [sort, setSort] = useState({});
 
   const handleFilter = (event, section, option) => {
-    const newFilter = { ...filter, [section.id]: option.value }; // [section.id]: option.value:-> This part adds a new key-value pair to the object. The key is determined by section.id, and the value is option.value. [section.id] is enclosed in square brackets ([]) because it represents a dynamic key. The value of section.id will be used as the key.
+    // console.log(event.target.checked);     // ye filter karte time checked/unchecked karne ke liye hai ...
+    let newFilter = {...filter};
+    // TODO : on server it will support multiple categories..
+    if(event.target.checked){              // iske andar ka code tab execute hoga jab user checkbox per check karega...
+      if(newFilter[section.id]){           // ye condition check karti hai ki kon se section per use dwara click kiya gaya hai. agar user wo section per click karta hai jis per wo ek baar click kar chuka hai to if ke andar ka code execute hoga aur uske existing newFilter object me option ki value ko update karega... section ka matlab hai ki 'Category aur Brands'... aur Option wo object hai jiske andar Category aur Brands ki details hain. option upper filter array me already defined hain..
+        newFilter[section.id].push(option.value);     // Suppose aapne pehle "Category" mein "smartphones" ko select kiya, to newFilter aise dikhega: newFilter = { newFilter =  category: ["smartphones"]} .... Phir aapne "Brands" mein "Apple" aur "Samsung" ko select kiya, to newFilter update hoga: {category: ["smartphones"], brand: ["Apple", "Samsung"]}. Is tarah se, newFilter multiple checkboxes ke values ko track karega aur aapko saare selected filters ka ek snapshot provide karega. 
+      } else {                                  // agar user pehle brand per click karta hai aur fir category wale section per click karta hai to iska matlab hai ki newFiler jo ki existing section aur uski values ko object me store karta hai(section.id ke sath) uske andar 'section.id' nahi hai... agr aisa hai to else ke andar ka code execute hoga aur jisme wo newFilter object ke andar user dwara select ki gayi section ki id ko store karega aur uske saath uski value ko bhi array ke andar put karega...
+        newFilter[section.id] = [option.value];
+      }
+    }
+    else {                          // check karne ke baad uncheck karne per ye code execute hoga...
+      const index = newFilter[section.id].findIndex(el => el === option.value);         // ye index find karne ka kaam newFilter object ke andar hoga jisme ki section ki id metioned hain jaise ki category aur Brands... fir usme existing array me wo find karega ki uss existing array me aisa kon sa index hai jiski value option ki value se match hoti hai ... fir index milne use index naam ke variable me stre kar diya jayega aur fir iske neeche wali line execute ho jayegi jo ki uss array me existing index jiski value option ki value se match karti hogi usko delete kar diya jayega splice method se... isme existing element ko jo ki newFilter oject ke andar section.id ke array me available hai use option.value se isliye compare kiya gaya hai kuki wo checkbox jisper hum click aur unclick karenge wo aur label dono ek hi div me hain, aur uss div ki id option.value di gayi hai....
+      newFilter[section.id].splice(index, 1);        // for delete the unchecked category(I've only 2 sections -> category and Brands)... i mean ki kisi category ko checked karne ke baad unchecked karne per use delete kar diya jayega...
+    }
+
+    console.log({ newFilter });
     setFilter(newFilter);
-    dispatch(fetchProductsByFiltersAsync(newFilter));
-    console.log(section.id, option.value);
   };
 
-  const handleSort = (event, option) => {
-    const newFilter = { ...filter, _sort: option.sort, _order: option.order }; // dummy.json file ka ye method hai ki usme sort karne ke liye '?_sort:value' di jati hai...
-    setFilter(newFilter);
-    dispatch(fetchProductsByFiltersAsync(newFilter));
+  const handleSort = (event, option) => {               
+    // Selected sorting option ke basis pe sort object neeche banaya jaa raha hai
+    const sort = { _sort: option.sort, _order: option.order };        // dummy.json file ka ye method hai ki usme sort karne ke liye '?_sort:value' di jati hai... isme sort object ke andar jab hum sort karte hain sort and order ke basis per to key ke aage underscore diya hua hai jo ki compulsary hai kyuki hum avi json-server se data leke aa re hain jo ki ye strictly mention karta hai ki key ke aage se underscore hona hi chiye sorting ke time.... agar hum underscore nahi lagate hain to data fetch nahi ho payega server se...
+    console.log({sort});
+    setSort(sort);                    // Sort state ko banaye gaye sort object ke saath set kiya ja raha hai
+    // dispatch(fetchProductsByFiltersAsync({ sort }));
   };
 
   useEffect(() => {
     // console.log(products);
-    dispatch(fetchAllProductsAsync());
-  }, [dispatch]);
+    dispatch(fetchProductsByFiltersAsync({filter, sort}));
+  }, [dispatch, filter, sort]);                        //  Jab aap dispatch ko useEffect ke dependency array mein daalte hain, to iska matlab hai ki agar Redux store ki state mein koi bhi change hoti hai (jise dispatch ke zariye kiya ja sakta hai), tab useEffect chalega. Yeh ek powerful mechanism hai jo aapko Redux store ki state changes ko monitor karne aur uske mutabiq client-side behavior ko update karne mein madad karta hai. Dependency array mein dispatch ko include karke, aap useEffect ko specific events ke liye subscribe kar rahe hain. Isse aap apne component ko Redux store ke state ke sath sync mein rakh sakte hain, aur dynamic updates ke liye tayyar reh sakte hain jab bhi Redux store ki state badalti hai.
 
   return (
     <div>
@@ -446,7 +461,7 @@ function MobileFilter({
 function DesktopFilter({ handleFilter }) {
   return (
     <form className="hidden lg:block">
-      {filters.map((section) => (
+      {filters.map((section) => (     
         <Disclosure
           as="div"
           key={section.id}
@@ -536,7 +551,6 @@ function Pagination() {
               <span className="sr-only">Previous</span>
               <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
             </a>
-            {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
             <a
               href="#"
               aria-current="page"
@@ -617,3 +631,7 @@ function ProductGrid({ products }) {
     </div>
   );
 }
+
+
+// 2:12:07
+// json-server --watch data.json --port 8080

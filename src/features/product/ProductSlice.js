@@ -17,9 +17,9 @@ export const fetchAllProductsAsync = createAsyncThunk(
 );
 
 export const fetchProductsByFiltersAsync = createAsyncThunk(
-  "product/fetchProductsByFilters",
-  async (filter) => {
-    const response = await fetchProductsByFilters(filter);
+  "product/fetchProductsByFilters",             // In the createAsyncThunk function, the first parameter is the type string, which is a unique identifier for the action. It helps the Redux Toolkit manage the asynchronous action creators and reducers. The type string is typically written in the format "sliceName/actionName.". "product" is the name of your slice and after the slash "fetchProductsByFilters" is the name of your asynchronous action. So, when you dispatch fetchProductsByFiltersAsync, it will internally dispatch actions like "product/fetchProductsByFilters/pending," "product/fetchProductsByFilters/fulfilled," or "product/fetchProductsByFilters/rejected," based on the status of the asynchronous operation. 
+  async ({filter, sort}) => {
+    const response = await fetchProductsByFilters(filter, sort);
     return response.data;
   }
 );
