@@ -1,9 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
-import { selectCount } from "../../product/ProductSlice";
+import { selectCount } from "../authSlice";
 import { Link } from "react-router-dom";
 
 function Login() {
-  const count = useSelector();
+  // const count = useSelector(selectCount);
   const dispatch = useDispatch();
 
   return (
@@ -82,7 +82,6 @@ function Login() {
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Not a member?{" "}
-
             <Link
               to="/signup"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"

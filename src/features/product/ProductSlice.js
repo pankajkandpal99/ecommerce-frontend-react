@@ -3,6 +3,7 @@ import {
   fetchAllProducts,
   fetchBrands,
   fetchCategories,
+  fetchProductById,
   fetchProductsByFilters,
 } from "./ProductAPI";
 
@@ -12,6 +13,7 @@ const initialState = {
   categories: [],
   status: "idle",
   totalItems: 0,
+  selectedProduct: null
 };
 
 export const fetchAllProductsAsync = createAsyncThunk(
@@ -21,6 +23,15 @@ export const fetchAllProductsAsync = createAsyncThunk(
     // The value we return becomes the `fulfilled` action payload
     // console.log(response.data);
     return response.data; // Returning the data from the response as the payload
+  }
+);
+
+export const fetchProductByIdAsync = createAsyncThunk(
+  "product/fetchProductById",                 // This is a action name
+  async (id) => {
+    const response = await fetchProductById(id); 
+    // console.log(response.data);
+    return response.data; 
   }
 );
 
@@ -89,14 +100,22 @@ export const productSlice = createSlice({
         state.status = "idle";
         state.categories = action.payload;
       })
+      .addCase(fetchProductByIdAsync.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(fetchProductByIdAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.selectedProduct = action.payload;
+      })
   },
 });
 
 export const { increment } = productSlice.actions;
 
-export const selectAllProducts = (state) => state.product.products; // redux store ki state me available products array ko send kar rahe hain direct access karne ke liye use useSelector hook.
-export const selectCategories = (state) => state.product.categories;     // direct category state export ho rahi hai...
-export const selectBrands = (state) => state.product.brands;             // direct brands state export ho rahi hai...
-export const selectTotalItems = (state) => state.product.totalItems; // redux store ki state me available totalItems ko send kar rahe hain direct access karne ke liye use useSelector hook.
+export const selectAllProducts = (state) => state.product.products;      // ye products state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki products state ke andar ka data use kiya ja sake.
+export const selectCategories = (state) => state.product.categories;     // ye category state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki category state ke andar ka data use kiya ja sake.
+export const selectBrands = (state) => state.product.brands;             // ye brands state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki brands state ke andar ka data use kiya ja sake.
+export const selectedProductById = (state) => state.product.selectedProduct;  // ye selectedProduct state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki selectedProduct state ke andar ka data use kiya ja sake.
+export const selectTotalItems = (state) => state.product.totalItems;     // ye totalItems state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki totalItems state ke andar ka data use kiya ja sake.
 
 export default productSlice.reducer;

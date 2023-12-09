@@ -9,6 +9,14 @@ export function fetchAllProducts() {
   });
 }
 
+export function fetchProductById(id) {
+  return new Promise(async (resolve) => {
+    const response = await fetch(`http://localhost:8080/products/${id}`);
+    const data = await response.json();
+    resolve({ data });
+  });
+}
+
 export function fetchProductsByFilters(filter, sort, pagination) {
   // filter = {"category" : ["smartphone", "laptop"]}        // aane wala data kuchh iss tarah ka hoga..
   // sort = { _sort: "price", _order="desc"}
@@ -43,7 +51,6 @@ export function fetchProductsByFilters(filter, sort, pagination) {
     resolve({ data: { products: data, totalItems: +totalItems } });
   });
 }
-
 
 export function fetchCategories() {
   return new Promise(async (resolve) => {

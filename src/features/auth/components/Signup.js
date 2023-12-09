@@ -1,9 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
-import { selectCount } from "../../product/ProductSlice";
+import { selectCount } from "../authSlice";
 import { Link } from "react-router-dom";
 
 function Signup() {
-  const count = useSelector();
+  // const count = useSelector(selectCount);
   const dispatch = useDispatch();
 
   return (
