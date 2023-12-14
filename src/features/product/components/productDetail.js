@@ -3,7 +3,9 @@ import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductByIdAsync, selectedProductById } from "../ProductSlice";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { addToCartAsync, selectItems } from "../../cart/CartSlice";
+import { selectLoggedInUser } from "../../auth/authSlice";
 
 //  TODO : In Server data we will add color, sizes etc..
 const colors = [
@@ -38,12 +40,20 @@ export default function ProductDetail() {
   const dispatch = useDispatch();
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
-  const product = useSelector(selectedProductById);          // isme redux ke ProductSlice file se data iss component me load hoga fir tab jake isme neeche loop chalake data load kiya jayega
-  const params = useParams();                                // jab url se iss component ko call kiya jayega to usme id ki jagah uss product ki id mentioned hogi jis roduct per click karke iss component ko call kiya ja ra hai. url se uss id ko extract karne ka kaam hi ye params hook karta hai jo ki react-router-dom ka hi part hai.
+  const user = useSelector(selectLoggedInUser);
+  const product = useSelector(selectedProductById); // isme redux ke ProductSlice file se data iss component me load hoga fir tab jake isme neeche loop chalake data load kiya jayega
+  const params = useParams(); // jab url se iss component ko call kiya jayega to usme id ki jagah uss product ki id mentioned hogi jis roduct per click karke iss component ko call kiya ja ra hai. url se uss id ko extract karne ka kaam hi ye params hook karta hai jo ki react-router-dom ka hi part hai.
+
+  const handleCart = (event) => {
+    event.preventDefault();
+    dispatch(addToCartAsync({...product, quantity: 1, user: user.id})); // action ko dispatch kar diya, means action ko redux ko bhej diya.
+  };
+
+  // console.log(items);
 
   useEffect(() => {
-    dispatch(fetchProductByIdAsync(params.id));     // ye function ProductSlice.js file se import ho ri hai, aur fir usi ko function me ProductList file se jab hum product ke kisi item per click karte hain to waha se product.id params.id ke roop me eatract hokar nikal li jati hai jo fir fetchProductByIdAsync(params.id) function ke andar dispatch kara di jati hai jo ki ProductSlice ko bhej di jati hai aur fir ProductSlice ProductApi component ko call karke server se data fetch karta hai aur fir ProductSlice ko deta hai jo ki check karta hai ki aane wale data ki state fullfilled hai ya fir pending. aur agra fulfilled hai to use update kar diya jata hai aur fir store ko updated state de di jati hai jisse useSelector use access kar leta hai aur neeche file me product me map function chalakar use use kar liya jata hai...
-  }, [dispatch, params.id]);                        // jaise hi ProductDetailPage ko App.js dwara call lagayi jayegi ye useEffect hook chalega, aur fetchProductByIdAsync(params.id) function redux ko dispatch kar diya jayega fir ye function jo dispatch hua hai wo ProductSlice function ko call karega
+    dispatch(fetchProductByIdAsync(params.id)); // ye function ProductSlice.js file se import ho ri hai, aur fir usi ko function me ProductList file se jab hum product ke kisi item per click karte hain to waha se product.id params.id ke roop me eatract hokar nikal li jati hai jo fir fetchProductByIdAsync(params.id) function ke andar dispatch kara di jati hai jo ki ProductSlice ko bhej di jati hai aur fir ProductSlice ProductApi component ko call karke server se data fetch karta hai aur fir ProductSlice ko deta hai jo ki check karta hai ki aane wale data ki state fullfilled hai ya fir pending. aur agra fulfilled hai to use update kar diya jata hai aur fir store ko updated state de di jati hai jisse useSelector use access kar leta hai aur neeche file me product me map function chalakar use use kar liya jata hai...
+  }, [dispatch, params.id]); // jaise hi ProductDetailPage ko App.js dwara call lagayi jayegi ye useEffect hook chalega, aur fetchProductByIdAsync(params.id) function redux ko dispatch kar diya jayega fir ye function jo dispatch hua hai wo ProductSlice function ko call karega
 
   return (
     <div className="bg-white">
@@ -284,6 +294,7 @@ export default function ProductDetail() {
                 </div>
 
                 <button
+                  onClick={handleCart}
                   type="submit"
                   className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
@@ -336,4 +347,4 @@ export default function ProductDetail() {
   );
 }
 
-
+// 3:47:00
