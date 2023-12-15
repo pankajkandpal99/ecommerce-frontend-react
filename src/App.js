@@ -1,7 +1,4 @@
-import {
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
@@ -13,6 +10,7 @@ import { useEffect } from "react";
 import { fetchItemsByUserIdAsync } from "./features/cart/CartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLoggedInUser } from "./features/auth/authSlice";
+import Order from "./features/order/Order";
 
 const router = createBrowserRouter([
   {
@@ -61,8 +59,10 @@ function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
 
-  useEffect(() => {                 // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
-    if (user) {                     // agar user hai tabhi action dispatch hoga.
+  useEffect(() => {
+    // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
+    if (user) {
+      // agar user hai tabhi action dispatch hoga.
       // console.log("Dispatching fetchItemsByUserIdAsync");
       dispatch(fetchItemsByUserIdAsync(user.id));
     }

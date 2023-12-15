@@ -36,7 +36,7 @@ export default function Signup() {
             className="space-y-6"
             onSubmit={handleSubmit((data) => {
               dispatch(
-                createUserAsync({ email: data.email, password: data.password })             // ye data jo iske andar parameters me hai wo data.json me jake save ho jayega.
+                createUserAsync({ email: data.email, password: data.password, addresses: [] })             // ye data jo iske andar parameters me hai wo data.json me jake save ho jayega.
               );
               console.log(data);
             })}

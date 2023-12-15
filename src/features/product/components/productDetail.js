@@ -46,7 +46,9 @@ export default function ProductDetail() {
 
   const handleCart = (event) => {
     event.preventDefault();
-    dispatch(addToCartAsync({...product, quantity: 1, user: user.id})); // action ko dispatch kar diya, means action ko redux ko bhej diya.
+    const newItem = { ...product, quantity: 1, user: user.id };
+    delete newItem["id"];    // This line deletes the "id" property from the newItem object. The reason for doing this might be to ensure that the "id" property does not interfere with the process of adding the item to the cart.
+    dispatch(addToCartAsync(newItem));  // action ko dispatch kar diya, means action ko redux ko bhej diya. isme id mention nahi ki hai jise json ka server khud add karega.
   };
 
   // console.log(items);
@@ -346,5 +348,3 @@ export default function ProductDetail() {
     </div>
   );
 }
-
-// 3:47:00
