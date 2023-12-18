@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { checkUser, createUser, updateUser } from "./authAPI";
+import { checkUser, createUser } from "./authAPI";
+import { updateUser } from "../user/userAPI";
 
 const initialState = {
   loggedInUser: null,
@@ -73,10 +74,8 @@ export const counterSlice = createSlice({
 });
 
 export const { increment } = counterSlice.actions;
-export const selectLoggedInUser = (state) => state.auth.loggedInUser; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho.. isme state.auth.loggedInUser me auth isliye aaya hai kyuki ye selector store se send hota hai na ki slice se. kyuki authReducer ko client side per auth key ke naam se send kiya ja ra hai tabhi yaha auth aaya hai.
+export const selectLoggedInUser = (state) => state.auth.loggedInUser; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho.. isme state.auth.loggedInUser me auth isliye aaya hai kyuki ye reducer ka naam hai.
 export const selectError = (state) => state.auth.error; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho..
 // export const updateUser = (state) => state.auth.loggedInUser;
 
 export default counterSlice.reducer;
-
-// 3:06:30

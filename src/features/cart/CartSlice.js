@@ -3,6 +3,7 @@ import {
   addToCart,
   deleteItemFromCart,
   fetchItemsByUserId,
+  resetCart,
   updateCart,
 } from "./CartAPI";
 
@@ -29,7 +30,7 @@ export const fetchItemsByUserIdAsync = createAsyncThunk(
 );
 
 export const updateCartAsync = createAsyncThunk(
-  "cart/updateCart",              // Yahan "cart/updateCart" ek action type hai jo updateCartAsync ke liye generate hota hai. Jab updateCartAsync ka koi async operation chalta hai, Redux Toolkit automatic taur par in action types ko generate karta hai, jaise: "cart/updateCart/pending", "cart/updateCart/fulfilled", "cart/updateCart/rejected"... In action types ka istemal extraReducers section mein kiya jata hai, jo ki neeche kiya gaya hai.
+  "cart/updateCart", // Yahan "cart/updateCart" ek action type hai jo updateCartAsync ke liye generate hota hai. Jab updateCartAsync ka koi async operation chalta hai, Redux Toolkit automatic taur par in action types ko generate karta hai, jaise: "cart/updateCart/pending", "cart/updateCart/fulfilled", "cart/updateCart/rejected"... In action types ka istemal extraReducers section mein kiya jata hai, jo ki neeche kiya gaya hai.
   async (update) => {
     const response = await updateCart(update);
     return response.data;
@@ -40,6 +41,14 @@ export const deleteItemFromCartAsync = createAsyncThunk(
   "cart/deleteItemFromCart",
   async (itemId) => {
     const response = await deleteItemFromCart(itemId);
+    return response.data;
+  }
+);
+
+export const resetCartAsync = createAsyncThunk(
+  "cart/resetCart",
+  async (userId) => {
+    const response = await resetCart(userId);
     return response.data;
   }
 );
@@ -89,6 +98,13 @@ export const counterSlice = createSlice({
           (item) => item.id === action.payload.id
         );
         state.items.splice(index, 1);
+      })
+      .addCase(resetCartAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(resetCartAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.items = [];
       });
   },
 });

@@ -8,6 +8,8 @@ function Login() {
   const user = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
 
+  // console.log(user);
+
   const {
     register,
     handleSubmit,
@@ -39,7 +41,7 @@ function Login() {
               dispatch(
                 checkUserAsync({ email: data.email, password: data.password })
               );
-              // console.log(data);
+              console.log(data);
             })}
           >
             <div>

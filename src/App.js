@@ -9,8 +9,12 @@ import Protected from "./features/auth/components/Protected";
 import { useEffect } from "react";
 import { fetchItemsByUserIdAsync } from "./features/cart/CartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import PageNotFound from "./pages/404";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
+import UserOrderPage from "./pages/UserOrderPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import { fetchLoggedInUserAsync } from "./features/user/userSlice";
 import { selectLoggedInUser } from "./features/auth/authSlice";
-import Order from "./features/order/Order";
 
 const router = createBrowserRouter([
   {
@@ -53,18 +57,34 @@ const router = createBrowserRouter([
       </Protected>
     ),
   },
+  {
+    path: "/order-success/:id",
+    element: <OrderSuccessPage />,
+  },
+  {
+    path: "/orders",
+    element: <UserOrderPage />,
+    // we will add page later right now using component directly. 
+  },
+  {
+    path: "/profile",
+    element: <UserProfilePage />,
+  },
+  {
+    path: "*",
+    element: <PageNotFound />,
+  },
 ]);
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
 
-  useEffect(() => {
-    // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
-    if (user) {
-      // agar user hai tabhi action dispatch hoga.
+  useEffect(() => {                // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
+    if (user) {             // agar user hai tabhi action dispatch hoga.
       // console.log("Dispatching fetchItemsByUserIdAsync");
       dispatch(fetchItemsByUserIdAsync(user.id));
+      dispatch(fetchLoggedInUserAsync(user.id));
     }
     // console.log(user?.id);
   }, [dispatch, user]);

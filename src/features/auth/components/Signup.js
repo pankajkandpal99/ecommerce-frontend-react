@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { selectLoggedInUser, createUserAsync } from "../authSlice";
+import { createUserAsync, selectLoggedInUser } from "../authSlice";
 import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 

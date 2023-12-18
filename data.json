@@ -2342,20 +2342,20 @@
         {
           "name": "pankaj kandpal",
           "email": "doe@gmail.com",
-          "phone": "7409430554",
-          "street": "kandey-sunari",
           "city": "Dwarahat",
-          "state": "Uk",
-          "pinCode": "263653"
+          "pinCode": "263653",
+          "street": "kandey-sunari",
+          "state": "Uttarakhand",
+          "phone": "7409430554"
         },
         {
-          "name": "pankaj",
-          "email": "doe@gmail.com",
+          "name": "Pankaj_2",
+          "email": "pankajkandpal99@gmail.com",
           "phone": "9675725077",
-          "street": "kandey(Bitholi)",
+          "street": "Simalgown",
           "city": "Dwarahat",
-          "state": "Uk",
-          "pinCode": "263653"
+          "state": "Uttarakhand",
+          "pinCode": "263545"
         }
       ],
       "id": 1
@@ -2367,76 +2367,32 @@
       "id": 2
     }
   ],
-  "cart": [
-    {
-      "title": "iPhone 9",
-      "description": "An apple mobile which is nothing like apple",
-      "price": 549,
-      "discountPercentage": 12.96,
-      "rating": 4.69,
-      "stock": 94,
-      "brand": "Apple",
-      "category": "smartphones",
-      "thumbnail": "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
-      "images": [
-        "https://i.dummyjson.com/data/products/1/1.jpg",
-        "https://i.dummyjson.com/data/products/1/2.jpg",
-        "https://i.dummyjson.com/data/products/1/3.jpg",
-        "https://i.dummyjson.com/data/products/1/4.jpg",
-        "https://i.dummyjson.com/data/products/1/thumbnail.jpg"
-      ],
-      "quantity": 1,
-      "user": 1,
-      "id": 5
-    },
-    {
-      "title": "iPhone 9",
-      "description": "An apple mobile which is nothing like apple",
-      "price": 549,
-      "discountPercentage": 12.96,
-      "rating": 4.69,
-      "stock": 94,
-      "brand": "Apple",
-      "category": "smartphones",
-      "thumbnail": "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
-      "images": [
-        "https://i.dummyjson.com/data/products/1/1.jpg",
-        "https://i.dummyjson.com/data/products/1/2.jpg",
-        "https://i.dummyjson.com/data/products/1/3.jpg",
-        "https://i.dummyjson.com/data/products/1/4.jpg",
-        "https://i.dummyjson.com/data/products/1/thumbnail.jpg"
-      ],
-      "quantity": 1,
-      "user": 2,
-      "id": 7
-    }
-  ],
+  "cart": [],
   "orders": [
     {
       "items": [
         {
-          "title": "iPhone 9",
-          "description": "An apple mobile which is nothing like apple",
-          "price": 549,
-          "discountPercentage": 12.96,
-          "rating": 4.69,
-          "stock": 94,
+          "title": "iPhone X",
+          "description": "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with ...",
+          "price": 899,
+          "discountPercentage": 17.94,
+          "rating": 4.44,
+          "stock": 34,
           "brand": "Apple",
           "category": "smartphones",
-          "thumbnail": "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
+          "thumbnail": "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
           "images": [
-            "https://i.dummyjson.com/data/products/1/1.jpg",
-            "https://i.dummyjson.com/data/products/1/2.jpg",
-            "https://i.dummyjson.com/data/products/1/3.jpg",
-            "https://i.dummyjson.com/data/products/1/4.jpg",
-            "https://i.dummyjson.com/data/products/1/thumbnail.jpg"
+            "https://i.dummyjson.com/data/products/2/1.jpg",
+            "https://i.dummyjson.com/data/products/2/2.jpg",
+            "https://i.dummyjson.com/data/products/2/3.jpg",
+            "https://i.dummyjson.com/data/products/2/thumbnail.jpg"
           ],
           "quantity": 1,
           "user": 1,
-          "id": 5
+          "id": 1
         }
       ],
-      "totalAmount": 549,
+      "totalAmount": 899,
       "totalItems": 1,
       "user": {
         "email": "doe@gmail.com",
@@ -2473,7 +2429,198 @@
         "state": "Uk",
         "pinCode": "263653"
       },
+      "status": "pending",
       "id": 1
+    },
+    {
+      "items": [
+        {
+          "title": "iPhone X",
+          "description": "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with ...",
+          "price": 899,
+          "discountPercentage": 17.94,
+          "rating": 4.44,
+          "stock": 34,
+          "brand": "Apple",
+          "category": "smartphones",
+          "thumbnail": "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
+          "images": [
+            "https://i.dummyjson.com/data/products/2/1.jpg",
+            "https://i.dummyjson.com/data/products/2/2.jpg",
+            "https://i.dummyjson.com/data/products/2/3.jpg",
+            "https://i.dummyjson.com/data/products/2/thumbnail.jpg"
+          ],
+          "quantity": 1,
+          "user": 1,
+          "id": 1
+        }
+      ],
+      "totalAmount": 899,
+      "totalItems": 1,
+      "user": {
+        "email": "doe@gmail.com",
+        "password": "Kandpal123",
+        "addresses": [
+          {
+            "name": "pankaj kandpal",
+            "email": "doe@gmail.com",
+            "phone": "7409430554",
+            "street": "kandey-sunari",
+            "city": "Dwarahat",
+            "state": "Uk",
+            "pinCode": "263653"
+          },
+          {
+            "name": "pankaj",
+            "email": "doe@gmail.com",
+            "phone": "9675725077",
+            "street": "kandey(Bitholi)",
+            "city": "Dwarahat",
+            "state": "Uk",
+            "pinCode": "263653"
+          }
+        ],
+        "id": 1
+      },
+      "paymentMethod": "cash",
+      "selectedAddress": {
+        "name": "pankaj kandpal",
+        "email": "doe@gmail.com",
+        "phone": "7409430554",
+        "street": "kandey-sunari",
+        "city": "Dwarahat",
+        "state": "Uk",
+        "pinCode": "263653"
+      },
+      "status": "pending",
+      "id": 2
+    },
+    {
+      "items": [
+        {
+          "title": "Samsung Galaxy Book",
+          "description": "Samsung Galaxy Book S (2020) Laptop With Intel Lakefield Chip, 8GB of RAM Launched",
+          "price": 1499,
+          "discountPercentage": 4.15,
+          "rating": 4.25,
+          "stock": 50,
+          "brand": "Samsung",
+          "category": "laptops",
+          "thumbnail": "https://i.dummyjson.com/data/products/7/thumbnail.jpg",
+          "images": [
+            "https://i.dummyjson.com/data/products/7/1.jpg",
+            "https://i.dummyjson.com/data/products/7/2.jpg",
+            "https://i.dummyjson.com/data/products/7/3.jpg",
+            "https://i.dummyjson.com/data/products/7/thumbnail.jpg"
+          ],
+          "quantity": 1,
+          "user": 1,
+          "id": 1
+        }
+      ],
+      "totalAmount": 1499,
+      "totalItems": 1,
+      "user": {
+        "email": "doe@gmail.com",
+        "password": "Kandpal123",
+        "addresses": [
+          {
+            "name": "pankaj kandpal",
+            "email": "doe@gmail.com",
+            "city": "Dwarahat",
+            "pinCode": "263653",
+            "street": "kandey-sunari",
+            "state": "Uttarakhand",
+            "phone": "7409430554"
+          },
+          {
+            "name": "Pankaj_2",
+            "email": "pankajkandpal99@gmail.com",
+            "phone": "9675725077",
+            "street": "Simalgown",
+            "city": "Dwarahat",
+            "state": "Uttarakhand",
+            "pinCode": "263545"
+          }
+        ],
+        "id": 1
+      },
+      "paymentMethod": "cash",
+      "selectedAddress": {
+        "name": "Pankaj_2",
+        "email": "pankajkandpal99@gmail.com",
+        "phone": "9675725077",
+        "street": "Simalgown",
+        "city": "Dwarahat",
+        "state": "Uttarakhand",
+        "pinCode": "263545"
+      },
+      "status": "pending",
+      "id": 3
+    },
+    {
+      "items": [
+        {
+          "title": "Infinix INBOOK",
+          "description": "Infinix Inbook X1 Ci3 10th 8GB 256GB 14 Win10 Grey – 1 Year Warranty",
+          "price": 1099,
+          "discountPercentage": 11.83,
+          "rating": 4.54,
+          "stock": 96,
+          "brand": "Infinix",
+          "category": "laptops",
+          "thumbnail": "https://i.dummyjson.com/data/products/9/thumbnail.jpg",
+          "images": [
+            "https://i.dummyjson.com/data/products/9/1.jpg",
+            "https://i.dummyjson.com/data/products/9/2.png",
+            "https://i.dummyjson.com/data/products/9/3.png",
+            "https://i.dummyjson.com/data/products/9/4.jpg",
+            "https://i.dummyjson.com/data/products/9/thumbnail.jpg"
+          ],
+          "quantity": 1,
+          "user": 1,
+          "id": 1
+        }
+      ],
+      "totalAmount": 1099,
+      "totalItems": 1,
+      "user": {
+        "email": "doe@gmail.com",
+        "password": "Kandpal123",
+        "addresses": [
+          {
+            "name": "pankaj kandpal",
+            "email": "doe@gmail.com",
+            "city": "Dwarahat",
+            "pinCode": "263653",
+            "street": "kandey-sunari",
+            "state": "Uttarakhand",
+            "phone": "7409430554"
+          },
+          {
+            "name": "Pankaj_2",
+            "email": "pankajkandpal99@gmail.com",
+            "phone": "9675725077",
+            "street": "Simalgown",
+            "city": "Dwarahat",
+            "state": "Uttarakhand",
+            "pinCode": "263545"
+          }
+        ],
+        "id": 1
+      },
+      "paymentMethod": "card",
+      "selectedAddress": {
+        "name": "pankaj kandpal",
+        "email": "doe@gmail.com",
+        "city": "Dwarahat",
+        "pinCode": "263653",
+        "street": "kandey-sunari",
+        "state": "Uttarakhand",
+        "phone": "7409430554"
+      },
+      "status": "pending",
+      "id": 4
     }
   ]
 }
