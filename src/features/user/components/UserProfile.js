@@ -9,6 +9,9 @@ export default function UserProfile() {
   const [selectedEditIndex, setSelectedEditIndex] = useState(-1); // initially index ki value -1 rahegi means ki koi value select nhi hai.
   const [showAddAddressForm, setshowAddAddressForm] = useState(false);
   // console.log(user);
+
+  // TODO: We will add payment section when we work on backend..
+  
   const {
     register,
     handleSubmit,
