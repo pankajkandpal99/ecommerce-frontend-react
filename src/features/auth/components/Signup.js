@@ -9,15 +9,13 @@ export default function Signup() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm();             // useForm hook ek React hook hai jo react-hook-form library ke hisaab se banaya gaya hai. Iska use form handling ke liye hota hai, jisse aap apne React forms ko easily manage kar sakte hain. 
-
+  } = useForm(); // useForm hook ek React hook hai jo react-hook-form library ke hisaab se banaya gaya hai. Iska use form handling ke liye hota hai, jisse aap apne React forms ko easily manage kar sakte hain.
   // console.log(errors);
 
   return (
     <>
-      {user && <Navigate to='/' replace={true} />}
+      {user && <Navigate to="/" replace={true} />}
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
@@ -36,7 +34,11 @@ export default function Signup() {
             className="space-y-6"
             onSubmit={handleSubmit((data) => {
               dispatch(
-                createUserAsync({ email: data.email, password: data.password, addresses: [] })             // ye data jo iske andar parameters me hai wo data.json me jake save ho jayega.
+                createUserAsync({
+                  email: data.email,
+                  password: data.password,
+                  addresses: [],
+                })                       // ye data jo iske andar parameters me hai wo data.json me jake save ho jayega.
               );
               console.log(data);
             })}

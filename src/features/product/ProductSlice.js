@@ -64,9 +64,9 @@ export const productSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    increment: (state) => {
-      state.value += 1;
-    },
+    // increment: (state) => {
+    //   state.value += 1;
+    // },
   },
 
   extraReducers: (builder) => {
@@ -110,7 +110,7 @@ export const productSlice = createSlice({
   },
 });
 
-export const { increment } = productSlice.actions;
+// export const { increment } = productSlice.actions;
 
 export const selectAllProducts = (state) => state.product.products;      // ye products state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki products state ke andar ka data use kiya ja sake.
 export const selectCategories = (state) => state.product.categories;     // ye category state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki category state ke andar ka data use kiya ja sake.

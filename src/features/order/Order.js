@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectOrder } from "./orderSlice";
+import {  } from "./orderSlice";
 
 export default function Order() {
-  // const orders = useSelector(selectOrder);
-  // const dispatch = useDispatch();
-  
-  // console.log(orders);
+  const dispatch = useDispatch();
   return (
     <div>
-      <div></div>
+      <div>{/* We will use to show orders on Admin Page */}</div>
     </div>
   );
 }

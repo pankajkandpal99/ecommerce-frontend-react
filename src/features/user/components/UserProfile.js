@@ -11,7 +11,7 @@ export default function UserProfile() {
   // console.log(user);
 
   // TODO: We will add payment section when we work on backend..
-  
+
   const {
     register,
     handleSubmit,
@@ -35,8 +35,7 @@ export default function UserProfile() {
     // setSelectedEditIndex(-1);
   };
 
-  const handleEditForm = (index) => {
-    // ye function edit button me click karne per ek form show karta hai, ye show ka option usi address wale field ke liye aayega jiski index value selectedEditIndex ke barabar hogi... aur uss form ke andar har field ki detail lane ka kaam iske neeche setValue wala logic karta hai jo ki react-hook-form ka hi ek part hai.
+  const handleEditForm = (index) => {       // ye function edit button me click karne per ek form show karta hai, ye show ka option usi address wale field ke liye aayega jiski index value selectedEditIndex ke barabar hogi... aur uss form ke andar har field ki detail lane ka kaam iske neeche setValue wala logic karta hai jo ki react-hook-form ka hi ek part hai.
     setSelectedEditIndex(index);
     // console.log(selectedEditIndex);      // isme index ka number aayega jo uss address ki hai database me jispar humne click kiya hai.
     const address = user.addresses[index];
@@ -50,7 +49,7 @@ export default function UserProfile() {
     setValue("pinCode", address.pinCode);
   };
 
-  const handleAdd = (address) => {
+  const handleAddAddressForm = (address) => {
     const newAddress = { ...user, addresses: [...user.addresses, address] };
     // console.log(newAddress);
     dispatch(updateUserAsync(newAddress));
@@ -74,11 +73,11 @@ export default function UserProfile() {
             type="submit"
             onClick={(e) => {
               setshowAddAddressForm(true);
-              setSelectedEditIndex(-1); // koi edit wala form na open ho.
+              setSelectedEditIndex(-1);        // koi edit wala form na open ho.
             }}
             className="rounded-md my-5 bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Add address
+            Add new address
           </button>
 
           {showAddAddressForm ? (
@@ -87,7 +86,7 @@ export default function UserProfile() {
               noValidate
               onSubmit={handleSubmit((address) => {
                 console.log(address);
-                handleAdd(address);
+                handleAddAddressForm(address);
                 reset(); // form jaise hi submit ho jata hai ye form field ko reset kar dega usi time.
               })}
             >
@@ -178,7 +177,7 @@ export default function UserProfile() {
                         <input
                           type="text"
                           {...register("street", {
-                            required: "street is is required",
+                            required: "street is required",
                           })}
                           id="street"
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -271,9 +270,7 @@ export default function UserProfile() {
                 </div>
               </div>
             </form>
-          ) : (
-            ""
-          )}
+          ) : null}
 
           <p className="mt-0.5 text-sm text-gray-900">Your Address:</p>
           {user?.addresses?.map((address, index) => {

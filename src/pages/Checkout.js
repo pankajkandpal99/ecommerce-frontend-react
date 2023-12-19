@@ -301,7 +301,7 @@ export default function Checkout() {
                 Choose from Existing addresses
               </p>
 
-              <ul role="list">
+              <ul>
                 {user?.addresses.map((address, index) => (
                   <li
                     key={index}
@@ -500,5 +500,3 @@ export default function Checkout() {
     </>
   );
 }
-
-// 4:10:00

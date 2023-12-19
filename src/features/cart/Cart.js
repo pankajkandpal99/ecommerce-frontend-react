@@ -4,15 +4,13 @@ import {
   selectItems,
   updateCartAsync,
 } from "./CartSlice";
-import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 
 export default function Cart() {
-  const [open, setOpen] = useState(true);
   const items = useSelector(selectItems);
   const dispatch = useDispatch();
 
-  console.log({ items });
+  // console.log({ items });
 
   const totalAmount = items.reduce(
     (amount, item) => amount + item.price * item.quantity,
@@ -34,7 +32,7 @@ export default function Cart() {
   return (
     <>
       {!items.length && <Navigate to="/" replace={true} />}
-      
+
       <div>
         <div className="mx-auto bg-white mt-12 max-w-7xl px-4  sm:px-6 lg:px-8">
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
@@ -43,7 +41,7 @@ export default function Cart() {
             </h2>
 
             <div className="flow-root">
-              <ul role="list" className="-my-6 divide-y divide-gray-200">
+              <ul className="-my-6 divide-y divide-gray-200">
                 {items.map((item) => (
                   <li key={item.id} className="flex py-6">
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
@@ -131,7 +129,6 @@ export default function Cart() {
                   <button
                     type="button"
                     className="font-medium text-indigo-600 hover:text-indigo-500"
-                    onClick={() => setOpen(false)}
                   >
                     Continue Shopping
                     <span aria-hidden="true"> &rarr;</span>

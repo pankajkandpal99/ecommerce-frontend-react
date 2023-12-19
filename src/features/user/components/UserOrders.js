@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchLoggedInUserOrdersAsync, selectUserInfo, selectUserOrders } from "../userSlice";
+import {
+  fetchLoggedInUserOrdersAsync,
+  selectUserInfo,
+  selectUserOrders,
+} from "../userSlice";
 
 export default function UserOrders() {
   const dispatch = useDispatch();
@@ -10,7 +14,7 @@ export default function UserOrders() {
 
   useEffect(() => {
     dispatch(fetchLoggedInUserOrdersAsync(user?.id));
-  }, []);
+  }, [dispatch, user]);
 
   return (
     <div>
@@ -29,7 +33,7 @@ export default function UserOrders() {
                   </h3>
 
                   <div className="flow-root">
-                    <ul role="list" className="-my-6 divide-y divide-gray-200">
+                    <ul className="-my-6 divide-y divide-gray-200">
                       {order?.items?.map((item) => {
                         // console.log(item);
                         return (

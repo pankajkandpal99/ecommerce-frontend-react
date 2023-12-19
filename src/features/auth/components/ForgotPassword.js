@@ -5,7 +5,6 @@ function ForgotPassword() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm(); // useForm hook ek React hook hai jo react-hook-form library ke hisaab se banaya gaya hai. Iska use form handling ke liye hota hai, jisse aap apne React forms ko easily manage kar sakte hain.
   console.log(errors);

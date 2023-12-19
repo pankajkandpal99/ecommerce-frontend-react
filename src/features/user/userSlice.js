@@ -8,7 +8,8 @@ import {
 const initialState = {
   userOrders: [],
   status: "idle",
-  userInfo: null, // This info will be used in case of detailed user info, while auth will... only be used for loggedInUser id etc checks..
+  userInfo: null, // This info will be used in case of detailed user info, while auth will... 
+  // only be used for loggedInUser id etc checks..
 };
 
 export const fetchLoggedInUserOrdersAsync = createAsyncThunk(
@@ -41,11 +42,10 @@ export const updateUserAsync = createAsyncThunk(
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    increment: (state) => {
-      state.value += 1;
-    },
+    // increment: (state) => {
+    //   state.value += 1;
+    // },
   },
 
   extraReducers: (builder) => {
@@ -75,8 +75,8 @@ export const userSlice = createSlice({
   },
 });
 
-export const { increment } = userSlice.actions;
+// export const { increment } = userSlice.actions;
 export const selectUserOrders = (state) => state.user.userOrders;
 export const selectUserInfo = (state) => state.user.userInfo;
 
-export default userSlice.reducer; // ye field userSlice ke reducer ka name field store ko deta hai jise store apne andar access karta hai.
+export default userSlice.reducer;              // ye field userSlice ke reducer ka name field store ko deta hai jise store apne andar access karta hai.

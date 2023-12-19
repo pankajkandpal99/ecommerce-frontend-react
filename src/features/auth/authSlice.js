@@ -38,13 +38,13 @@ export const signOutAsync = createAsyncThunk("user/sigOut", async (userId) => {
   return response.data;
 });
 
-export const counterSlice = createSlice({
+export const authSlice = createSlice({
   name: "user", // <-- This is the slice name
   initialState, // The `reducers` field lets us define reducers and generate associated actions...
   reducers: {
-    increment: (state) => {
-      state.value += 1;
-    },
+    // increment: (state) => {
+    //   state.value += 1;
+    // },
   },
 
   extraReducers: (builder) => {
@@ -86,9 +86,7 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { increment } = counterSlice.actions;
 export const selectLoggedInUser = (state) => state.auth.loggedInUser; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho.. isme state.auth.loggedInUser me auth isliye aaya hai kyuki ye reducer ka naam hai.
 export const selectError = (state) => state.auth.error; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho..
-// export const updateUser = (state) => state.auth.loggedInUser;
 
-export default counterSlice.reducer;
+export default authSlice.reducer;

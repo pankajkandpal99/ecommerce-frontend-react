@@ -20,7 +20,7 @@ export function checkUser(loginInfo) {
 
     const response = await fetch("http://localhost:8080/users?email=" + email);
     const data = await response.json();
-    // console.log({ data });
+    console.log({ data });
     if (data.length) {
       if (password === data[0].password) {
         resolve({ data: data[0] }); // hame data array return hoga jisme har object me user ka email aur password store hoga. aur ye data.jso se aa raha hai.
