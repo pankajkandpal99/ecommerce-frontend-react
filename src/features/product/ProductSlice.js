@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  createProduct,
   fetchAllProducts,
   fetchBrands,
   fetchCategories,
   fetchProductById,
   fetchProductsByFilters,
+  updateProduct,
 } from "./ProductAPI";
 
 const initialState = {
@@ -13,25 +15,43 @@ const initialState = {
   categories: [],
   status: "idle",
   totalItems: 0,
-  selectedProduct: null
+  selectedProduct: null,
 };
+
+export const createProductAsync = createAsyncThunk(
+  "product/createProduct",
+  async (update) => {
+    console.log(product);
+    const response = await createProduct(update);
+    return response.data;
+  }
+);
+
+export const updateProductAsync = createAsyncThunk(
+  "product/updateProduct",
+  async (update) => {
+    console.log(update);
+    const response = await updateProduct(update);
+    console.log(response.data);
+    return response.data;
+  }
+);
 
 export const fetchAllProductsAsync = createAsyncThunk(
   "product/fetchAllProducts", // The action type for the pending and fulfilled actions...
   async () => {
     const response = await fetchAllProducts(); // Fetching products asynchronously
-    // The value we return becomes the `fulfilled` action payload
     // console.log(response.data);
     return response.data; // Returning the data from the response as the payload
   }
 );
 
 export const fetchProductByIdAsync = createAsyncThunk(
-  "product/fetchProductById",                 // This is a action name
+  "product/fetchProductById", // This is a action name
   async (id) => {
-    const response = await fetchProductById(id); 
+    const response = await fetchProductById(id);
     // console.log(response.data);
-    return response.data; 
+    return response.data;
   }
 );
 
@@ -62,11 +82,10 @@ export const fetchCategoriesAsync = createAsyncThunk(
 export const productSlice = createSlice({
   name: "product",
   initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    // increment: (state) => {
-    //   state.value += 1;
-    // },
+    clearSelectedProduct: (state) => {
+      state.selectedProduct = null;
+    },
   },
 
   extraReducers: (builder) => {
@@ -107,15 +126,32 @@ export const productSlice = createSlice({
         state.status = "idle";
         state.selectedProduct = action.payload;
       })
+      .addCase(createProductAsync.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(createProductAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.products.push(action.payload);
+      })
+      .addCase(updateProductAsync.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(updateProductAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        const index = state.products.findIndex(
+          (product) => product.id === action.payload.id
+        );
+        state.products[index] = action.payload;
+      });
   },
 });
 
-// export const { increment } = productSlice.actions;
+export const { clearSelectedProduct } = productSlice.actions;
 
-export const selectAllProducts = (state) => state.product.products;      // ye products state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki products state ke andar ka data use kiya ja sake.
-export const selectCategories = (state) => state.product.categories;     // ye category state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki category state ke andar ka data use kiya ja sake.
-export const selectBrands = (state) => state.product.brands;             // ye brands state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki brands state ke andar ka data use kiya ja sake.
-export const selectedProductById = (state) => state.product.selectedProduct;  // ye selectedProduct state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki selectedProduct state ke andar ka data use kiya ja sake.
-export const selectTotalItems = (state) => state.product.totalItems;     // ye totalItems state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki totalItems state ke andar ka data use kiya ja sake.
+export const selectAllProducts = (state) => state.product.products; // ye products state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki products state ke andar ka data use kiya ja sake.
+export const selectCategories = (state) => state.product.categories; // ye category state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki category state ke andar ka data use kiya ja sake.
+export const selectBrands = (state) => state.product.brands; // ye brands state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki brands state ke andar ka data use kiya ja sake.
+export const selectedProductById = (state) => state.product.selectedProduct; // ye selectedProduct state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki selectedProduct state ke andar ka data use kiya ja sake.
+export const selectTotalItems = (state) => state.product.totalItems; // ye totalItems state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki totalItems state ke andar ka data use kiya ja sake.
 
 export default productSlice.reducer;

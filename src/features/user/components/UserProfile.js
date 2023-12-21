@@ -35,7 +35,8 @@ export default function UserProfile() {
     // setSelectedEditIndex(-1);
   };
 
-  const handleEditForm = (index) => {       // ye function edit button me click karne per ek form show karta hai, ye show ka option usi address wale field ke liye aayega jiski index value selectedEditIndex ke barabar hogi... aur uss form ke andar har field ki detail lane ka kaam iske neeche setValue wala logic karta hai jo ki react-hook-form ka hi ek part hai.
+  const handleEditForm = (index) => {
+    // ye function edit button me click karne per ek form show karta hai, ye show ka option usi address wale field ke liye aayega jiski index value selectedEditIndex ke barabar hogi... aur uss form ke andar har field ki detail lane ka kaam iske neeche setValue wala logic karta hai jo ki react-hook-form ka hi ek part hai.
     setSelectedEditIndex(index);
     // console.log(selectedEditIndex);      // isme index ka number aayega jo uss address ki hai database me jispar humne click kiya hai.
     const address = user.addresses[index];
@@ -56,6 +57,17 @@ export default function UserProfile() {
     setshowAddAddressForm(false);
   };
 
+  const handleCancelAddressForm = (event) => {
+    setshowAddAddressForm(false);
+    setValue("name", "");
+    setValue("email", "");
+    setValue("phone", "");
+    setValue("street", "");
+    setValue("city", "");
+    setValue("state", "");
+    setValue("pinCode", "");
+  };
+
   return (
     <div>
       <div className="mx-auto bg-white mt-12 max-w-7xl px-4  sm:px-6 lg:px-8">
@@ -64,8 +76,13 @@ export default function UserProfile() {
             Name: {user?.name ? user.name : "New User"}
           </h1>
           <h3 className="text-xl my-6 font-bold tracking-tight text-red-900">
-            eamil address: {user?.email}
+            email address: {user?.email}
           </h3>
+          {user?.role === "admin" && (
+            <h3 className="text-xl my-6 font-bold tracking-tight text-red-900">
+              role: {user?.role}
+            </h3>
+          )}
         </div>
 
         <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
@@ -73,7 +90,7 @@ export default function UserProfile() {
             type="submit"
             onClick={(e) => {
               setshowAddAddressForm(true);
-              setSelectedEditIndex(-1);        // koi edit wala form na open ho.
+              setSelectedEditIndex(-1); // koi edit wala form na open ho.
             }}
             className="rounded-md my-5 bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
@@ -263,6 +280,13 @@ export default function UserProfile() {
                 <div className="mt-6 flex items-center justify-end gap-x-6">
                   <button
                     type="submit"
+                    onClick={(e) => handleCancelAddressForm(e)}
+                    className="rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
                     className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     Add Address
@@ -272,14 +296,14 @@ export default function UserProfile() {
             </form>
           ) : null}
 
-          <p className="mt-0.5 text-sm text-gray-900">Your Address:</p>
+          <p className="mt-0.5 text-md text-gray-900">Your Address:</p>
           {user?.addresses?.map((address, index) => {
             // console.log(address);
             return (
               <div>
                 {selectedEditIndex === index ? (
                   <form
-                    className="bg-white px-5 py-12 mt-12"
+                    className="bg-white px-5 py-12 mt-8"
                     noValidate
                     onSubmit={handleSubmit((data) => {
                       console.log(data);
@@ -471,7 +495,7 @@ export default function UserProfile() {
                         <button
                           onClick={(e) => setSelectedEditIndex(-1)}
                           type="submit"
-                          className="rounded-md px-3 py-2 text-sm font-semibold text-grey shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          className="rounded-md px-3 py-2 text-sm font-semibold text-grey hover:bg-gray-100 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
                           Cancel
                         </button>

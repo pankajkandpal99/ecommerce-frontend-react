@@ -9,6 +9,7 @@ export function fetchAllProducts() {
   });
 }
 
+// for get products from database..
 export function fetchProductById(id) {
   return new Promise(async (resolve) => {
     const response = await fetch(`http://localhost:8080/products/${id}`);
@@ -22,8 +23,11 @@ export function fetchProductsByFilters(filter, sort, pagination) {
   // sort = { _sort: "price", _order="desc"}
   // pagination = {_page: 1, _limit=10}
   // TODO: on server we will support multi values
+  // TODO: Server will filter deletedd products in case of non-admin
+
   let queryString = "";
-  for (let key in filter) {                  // ye loop filter object me iterate karne ke liye hai. jo ki ProductList.js file ke andar userEffect se dispatch ho rah hai... jisme ki 'filter' object ke har key(jisme array me values stored hain) ke liye loop chalaya ja ra hai. jaise ki hamare filter object me kewal 2 hi keys hain -> Category and Brands.. har ek key me array me uski values stored hain jisme ki ye loop chalaya ja ra hai.. sample filter object ye hai -> filter = {category: ["smartphones", "laptops", "skincare"],  brand: ["Apple", "Samsung", "Dell", "hp", "facewash", "cream"]}.....
+  for (let key in filter) {
+    // ye loop filter object me iterate karne ke liye hai. jo ki ProductList.js file ke andar userEffect se dispatch ho rah hai... jisme ki 'filter' object ke har key(jisme array me values stored hain) ke liye loop chalaya ja ra hai. jaise ki hamare filter object me kewal 2 hi keys hain -> Category and Brands.. har ek key me array me uski values stored hain jisme ki ye loop chalaya ja ra hai.. sample filter object ye hai -> filter = {category: ["smartphones", "laptops", "skincare"],  brand: ["Apple", "Samsung", "Dell", "hp", "facewash", "cream"]}.....
     const categoryValues = filter[key]; // ye user per depend karta hai ki usne filter object me kon si key me click kiya hai. fir uske baad 'filter' object mein current key ke sath associated values ka array lein. kyuki humne filter[key] kiya hai to hame uss key ki sari values mil jayengi jo ki ek array hai... to hame wo poora array mil jayega..
     if (categoryValues.length) {
       // agar array khali nahi hai.
@@ -33,7 +37,8 @@ export function fetchProductsByFilters(filter, sort, pagination) {
     }
   }
 
-  for (let key in sort) {                  // ye loop iss example me chalaya jayega jo user ke dwara hit kiya gaya hai --> sort = {_sort: 'price', _order: 'asc'}
+  for (let key in sort) {
+    // ye loop iss example me chalaya jayega jo user ke dwara hit kiya gaya hai --> sort = {_sort: 'price', _order: 'asc'}
     queryString += `${key}=${sort[key]}&`; // queryString kuchh aisi ho jayegi --> _sort=price&_order=desc& --> ye aise URL me add ho jayega..
     // console.log(queryString);
   }
@@ -65,6 +70,36 @@ export function fetchBrands() {
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:8080/brands");
     const data = await response.json();
+    resolve({ data });
+  });
+}
+
+export function createProduct(product) {
+  console.log(product);
+  return new Promise(async (resolve) => {
+    const response = await fetch(`http://localhost:8080/products/`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(product),
+    });
+
+    const data = await response.json();
+    console.log(data);
+    resolve({ data });
+  });
+}
+
+// update the product
+export function updateProduct(update) {
+  return new Promise(async (resolve) => {
+    const response = await fetch(`http://localhost:8080/products/${update.id}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(update),
+    });
+
+    const data = await response.json();
+    console.log(data);
     resolve({ data });
   });
 }

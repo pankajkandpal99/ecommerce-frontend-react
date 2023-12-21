@@ -38,6 +38,8 @@ export default function Signup() {
                   email: data.email,
                   password: data.password,
                   addresses: [],
+                  role: 'user',
+                  // TODO: This role can be directly given on backend..
                 })                       // ye data jo iske andar parameters me hai wo data.json me jake save ho jayega.
               );
               console.log(data);
