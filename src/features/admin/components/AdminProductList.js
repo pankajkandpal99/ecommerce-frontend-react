@@ -10,7 +10,7 @@ import {
   selectCategories,
   selectTotalItems,
 } from "../../product/ProductSlice";
-import { ITEMS_PER_PAGE } from "../../../app/constants";
+import { ITEMS_PER_PAGE, discountedPrice } from "../../../app/constants";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react"; // Dialog, Disclosure, aur Menu components, aapke UI mein modal dialogs, collapsible sections, aur dropdown menus banane mein madad karte hain. Ye components aksar accessibility guidelines ko bhi follow karte hain, jisse aapke UI ko users ke liye accessible banane mein help hoti hai. Jab aap kisi UI element ko show ya hide karte hain aur aap usme smooth transition chahte hain, tab aap Transition component ka istemal kar sakte hain. Iske through, aap element ke state changes ko handle kar sakte hain, jaise ki jab aap ek dropdown open ya close karte hain.
 import {
   ChevronLeftIcon,
@@ -48,7 +48,7 @@ export default function AdminProductList() {
   const [sort, setSort] = useState({});
   const [page, setPage] = useState(1); // page ki starting value 1 se start hogi.
 
-  console.log(products);
+  // console.log(products);
 
   const filters = [
     {
@@ -497,7 +497,7 @@ function ProductGrid({ products }) {
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {products?.map((product) => (
             <div>
-              <Link to={`/product-detail/${product.id}`}>
+              <Link to={`/admin/product-detail/${product.id}`}>
                 <div
                   key={product.id}
                   className="group relative border-solid border-2 p-2 border-gray-200"
@@ -528,17 +528,14 @@ function ProductGrid({ products }) {
 
                     <div>
                       <p className="text-sm font-medium text-gray-900">
-                        $
-                        {Math.round(
-                          product.price * (1 - product.discountPercentage / 100)
-                        )}
+                        $ {discountedPrice(product)}
                       </p>
                       <p className="text-sm font-medium text-gray-400 line-through">
                         ${product.price}
                       </p>
                     </div>
                   </div>
-                  {product.deleted && (
+                  {product?.deleted && (
                     <div>
                       <p className="text-sm text-red-400">product deleted</p>
                     </div>

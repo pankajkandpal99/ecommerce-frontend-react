@@ -13,6 +13,7 @@ import {
   selectCurrentOrder,
 } from "../features/order/orderSlice";
 import { selectUserInfo } from "../features/user/userSlice";
+import { discountedPrice } from "../app/constants";
 
 export default function Checkout() {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ export default function Checkout() {
   // console.log({ items });
 
   const totalAmount = items.reduce(
-    (amount, item) => amount + item.price * item.quantity,
+    (amount, item) => amount + discountedPrice(item) * item.quantity,
     0
   ); // accumulator: Accumulator variable jo ki yaha per amount hai, ye har iteration mein update hota hai... currentValue: Current element of the array jo ki yaha per item hai.
 
@@ -292,7 +293,7 @@ export default function Checkout() {
                 </div>
               </div>
             </form>
-            
+
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-base font-semibold leading-7 text-gray-900">
                 Addresses
@@ -396,63 +397,68 @@ export default function Checkout() {
 
                 <div className="flow-root">
                   <ul role="list" className="-my-6 divide-y divide-gray-200">
-                    {items.map((item) => (
-                      <li key={item.id} className="flex py-6">
-                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                          <img
-                            src={item.thumbnail}
-                            alt={item.title}
-                            className="h-full w-full object-cover object-center"
-                          />
-                        </div>
-
-                        <div className="ml-4 flex flex-1 flex-col">
-                          <div>
-                            <div className="flex justify-between text-base font-medium text-gray-900">
-                              <h3>
-                                <a href={item.href}>{item.title}</a>
-                              </h3>
-                              <p className="ml-4">
-                                ${item.price * item.quantity}
-                              </p>
-                            </div>
-                            <p className="mt-1 text-sm text-gray-500">
-                              {item.brand}
-                            </p>
-                          </div>
-                          <div className="flex flex-1 items-end justify-between text-sm mb-2">
-                            <div className="text-gray-500">
-                              <label
-                                htmlFor="quantity"
-                                className="inline mr-5 text-sm font-medium loading-6 text-gray-900"
-                              >
-                                Qty
-                              </label>
-                              <select
-                                value={item.quantity}
-                                onChange={(e) => handleQuatity(e, item)}
-                              >
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                              </select>
+                    {items.map((item) => {
+                      console.log(item);
+                      return (
+                        <>
+                          <li key={item.id} className="flex py-6">
+                            <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                              <img
+                                src={item.thumbnail}
+                                alt={item.title}
+                                className="h-full w-full object-cover object-center"
+                              />
                             </div>
 
-                            <div className="flex">
-                              <button
-                                type="button"
-                                className="font-medium text-indigo-600 hover:text-indigo-500"
-                                onClick={(e) => handleRemove(e, item.id)} // item.id se usi item ki id jayegi jis item per ye Remove button hoga...
-                              >
-                                Remove
-                              </button>
+                            <div className="ml-4 flex flex-1 flex-col">
+                              <div>
+                                <div className="flex justify-between text-base font-medium text-gray-900">
+                                  <h3>
+                                    <a href={item.href}>{item.title}</a>
+                                  </h3>
+                                  <p className="ml-4">
+                                    ${discountedPrice(item) * item.quantity}
+                                  </p>
+                                </div>
+                                <p className="mt-1 text-sm text-gray-500">
+                                  {item.brand}
+                                </p>
+                              </div>
+                              <div className="flex flex-1 items-end justify-between text-sm mb-2">
+                                <div className="text-gray-500">
+                                  <label
+                                    htmlFor="quantity"
+                                    className="inline mr-5 text-sm font-medium loading-6 text-gray-900"
+                                  >
+                                    Qty
+                                  </label>
+                                  <select
+                                    value={item.quantity}
+                                    onChange={(e) => handleQuatity(e, item)}
+                                  >
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                  </select>
+                                </div>
+
+                                <div className="flex">
+                                  <button
+                                    type="button"
+                                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                                    onClick={(e) => handleRemove(e, item.id)} // item.id se usi item ki id jayegi jis item per ye Remove button hoga...
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
+                          </li>
+                        </>
+                      );
+                    })}
                   </ul>
                 </div>
               </div>

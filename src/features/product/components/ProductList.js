@@ -10,14 +10,9 @@ import {
   selectCategories,
   selectTotalItems,
 } from "../ProductSlice";
-import { ITEMS_PER_PAGE } from "../../../app/constants";
+import { ITEMS_PER_PAGE, discountedPrice } from "../../../app/constants";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react"; // Dialog, Disclosure, aur Menu components, aapke UI mein modal dialogs, collapsible sections, aur dropdown menus banane mein madad karte hain. Ye components aksar accessibility guidelines ko bhi follow karte hain, jisse aapke UI ko users ke liye accessible banane mein help hoti hai. Jab aap kisi UI element ko show ya hide karte hain aur aap usme smooth transition chahte hain, tab aap Transition component ka istemal kar sakte hain. Iske through, aap element ke state changes ko handle kar sakte hain, jaise ki jab aap ek dropdown open ya close karte hain.
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  StarIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { StarIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
   FunnelIcon,
@@ -25,6 +20,7 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
+import Pagination from "../../common/Pagination";
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
@@ -99,7 +95,7 @@ export default function ProductList() {
   const handlePage = (page) => {
     // page = index + 1....
     // console.log(page);                             // isme uss page ka index number se 1 jyada number aa jayega kyuki index 0 se start hota hai aur page 1 se start hota hai jisper hum click kar rahe hain..
-    setPage(page); // jab 1...10 me se kisi bhi page per ya number per click kiya jayega to uss number ka index nikala jayega aur use uske index se 1 add kar diya jayega jo ki neeche pagination function or component me kiya gaya hai.... jiss number per click kiya jayega wo page setPage function set kar dega..
+    setPage(page);
   };
 
   useEffect(() => {
@@ -403,140 +399,49 @@ function DesktopFilter({ handleFilter, filters }) {
   );
 }
 
-function Pagination({ page, setPage, handlePage, totalItems }) {
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-  return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-      {/* This downside first div is for mobile layout */}
-      <div className="flex flex-1 justify-between sm:hidden">
-        <div
-          onClick={(e) => handlePage(page > 1 ? page - 1 : page)}
-          className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
-          Previous
-        </div>
-        <div
-          onClick={(e) => handlePage(page < totalPages ? page + 1 : page)}
-          className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
-          Next
-        </div>
-      </div>
-      {/* This downside div is for desktop or upper mobile sizes. */}
-      <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm text-gray-700">
-            Showing{" "}
-            <span className="font-medium">
-              {(page - 1) * ITEMS_PER_PAGE + 1}
-            </span>{" "}
-            to{" "}
-            <span className="font-medium">
-              {page * ITEMS_PER_PAGE > totalItems
-                ? totalItems
-                : page * ITEMS_PER_PAGE}
-            </span>{" "}
-            of <span className="font-medium">{totalItems}</span> results
-          </p>
-        </div>
-        <div>
-          <nav
-            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-            aria-label="Pagination"
-          >
-            <div
-              onClick={(e) => handlePage(page > 1 ? page - 1 : page)}
-              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            >
-              <span className="sr-only">Previous</span>
-              <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-            </div>
-
-            {/* This creates an array with a length equal to the number of pages needed to display all items based on the totalItems(which is comes from the json-server in ProductAPI file and creates the totalItems variable and send to the redux and then we are fetching the totalItems state from the fetchProductsByFiltersAsync function in the ProductSlice file) and ITEMS_PER_PAGE. Array create krke usper loop karne ka ek tareeka ye v haii --> [...Array(Math.ceil(totalItems / ITEMS_PER_PAGE)).keys()]...isme v array hi create kiya ja ra hai aur fir usme loop kiya ja ra hai */}
-            {/* kyuki mujhe 1 se lekar 10 tak ke pages dikhane hain to array ki jarurat to padegi. Array.from() method ke pehle ek iterable object ya array-like object chahiye hota hai. Iske liye aapne { length: Math.ceil(totalItems / ITEMS_PER_PAGE) } diya hai. Yeh ek object hai jiska ek property length hai, aur uski value Math.ceil(totalItems / ITEMS_PER_PAGE) hai. Ismen object ki zarurat isliye padti hai kyun ki Array.from() method ek iterable object ya array-like object se seedha array create karta hai. Jab aap { length: Math.ceil(totalItems / ITEMS_PER_PAGE) } dete hain, toh Array.from() method is object ko dekhta hai, uske length property ko extract karta hai, aur phir uske basis pe ek array create karta hai. */}
-            {Array.from({ length: totalPages }).map((el, index) => (
-              <div
-                onClick={() => handlePage(index + 1)}
-                aria-current="page"
-                className={`relative z-10 inline-flex items-center cursor-pointer ${
-                  index + 1 === page
-                    ? "bg-indigo-600 text-white"
-                    : "text-gray-400"
-                } px-4 py-2 text-sm font-semibold focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
-              >
-                {index + 1}{" "}
-                {/* humne yaha per iss array ki indexing use ki hai kyuki create kiya gaya array to empty hai. array empty isliye hai kyuki hum khali array jiski length 10 hai uss per loop chala rahe hain. aur uske index ki value undefined hai kyuki humne uss array me koi element push kiya hi nahi aur na hi humne existing array per loop chalaya hai, humne to ek naya 10 size ke array per loop chalaya hai. */}
-              </div>
-            ))}
-
-            <div
-              onClick={(e) => handlePage(page < totalPages ? page + 1 : page)}
-              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            >
-              <span className="sr-only">Next</span>
-              <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-            </div>
-          </nav>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function ProductGrid({ products }) {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {products?.map((product) => (
-            <>
-              {!product.deleted && (
-                <Link to={`/product-detail/${product.id}`}>
-                  <div
-                    key={product.id}
-                    className="group relative border-solid border-2 p-2 border-gray-200"
-                  >
-                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
-                      <img
-                        src={product.thumbnail}
-                        alt={product.title}
-                        className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                      />
-                    </div>
-                    <div className="mt-4 flex justify-between">
-                      <div>
-                        <h3 className="text-sm text-gray-700">
-                          <div href={product.thumbnail}>
-                            <span
-                              aria-hidden="true"
-                              className="absolute inset-0"
-                            />
-                            {product.name}
-                          </div>
-                        </h3>
-                        <p className="mt-1 text-sm text-gray-500">
-                          <StarIcon className="w-6 h-6 inline" />
-                          <span className="align-bottom">{product.rating}</span>
-                        </p>
+            <Link to={`/product-detail/${product.id}`}>
+              <div
+                key={product.id}
+                className="group relative border-solid border-2 p-2 border-gray-200"
+              >
+                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
+                  <img
+                    src={product.thumbnail}
+                    alt={product.title}
+                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                  />
+                </div>
+                <div className="mt-4 flex justify-between">
+                  <div>
+                    <h3 className="text-sm text-gray-700">
+                      <div href={product.thumbnail}>
+                        <span aria-hidden="true" className="absolute inset-0" />
+                        {product.name}
                       </div>
-
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          $
-                          {Math.round(
-                            product.price *
-                              (1 - product.discountPercentage / 100)
-                          )}
-                        </p>
-                        <p className="text-sm font-medium text-gray-400 line-through">
-                          ${product.price}
-                        </p>
-                      </div>
-                    </div>
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                      <StarIcon className="w-6 h-6 inline" />
+                      <span className="align-bottom">{product.rating}</span>
+                    </p>
                   </div>
-                </Link>
-              )}
-            </>
+
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      $ {discountedPrice(product)}
+                    </p>
+                    <p className="text-sm font-medium text-gray-400 line-through">
+                      ${product.price}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -5,6 +5,7 @@ import {
   selectUserInfo,
   selectUserOrders,
 } from "../userSlice";
+import { discountedPrice } from "../../../app/constants";
 
 export default function UserOrders() {
   const dispatch = useDispatch();
@@ -53,7 +54,7 @@ export default function UserOrders() {
                                     <a href={item.href}>{item.title}</a>
                                   </h3>
                                   <p className="ml-4">
-                                    ${item.price * item.quantity}
+                                    ${discountedPrice(item)}
                                   </p>
                                 </div>
                                 <p className="mt-1 text-sm text-gray-500">

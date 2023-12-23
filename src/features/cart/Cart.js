@@ -5,6 +5,7 @@ import {
   updateCartAsync,
 } from "./CartSlice";
 import { Link, Navigate } from "react-router-dom";
+import { discountedPrice } from "../../app/constants";
 
 export default function Cart() {
   const items = useSelector(selectItems);
@@ -13,7 +14,7 @@ export default function Cart() {
   // console.log({ items });
 
   const totalAmount = items.reduce(
-    (amount, item) => amount + item.price * item.quantity,
+    (amount, item) => amount + discountedPrice(item) * item.quantity,
     0
   ); // accumulator: Accumulator variable jo ki yaha per amount hai, ye har iteration mein update hota hai... currentValue: Current element of the array jo ki yaha per item hai.
 
@@ -58,7 +59,7 @@ export default function Cart() {
                           <h3>
                             <a href={item.href}>{item.title}</a>
                           </h3>
-                          <p className="ml-4">${item.price * item.quantity}</p>
+                          <p className="ml-4">${discountedPrice(item) * item.quantity}</p>
                         </div>
                         <p className="mt-1 text-sm text-gray-500">
                           {item.brand}
