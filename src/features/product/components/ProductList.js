@@ -8,6 +8,7 @@ import {
   selectAllProducts,
   selectBrands,
   selectCategories,
+  selectProductListStatus,
   selectTotalItems,
 } from "../ProductSlice";
 import { ITEMS_PER_PAGE, discountedPrice } from "../../../app/constants";
@@ -21,6 +22,7 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import Pagination from "../../common/Pagination";
+import { Grid } from "react-loader-spinner";
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
@@ -36,6 +38,7 @@ export default function ProductList() {
   // iss component to HomePage ke andar '/' route per call kiya ja ra hai ...
   const dispatch = useDispatch();
   const products = useSelector(selectAllProducts);
+  const status = useSelector(selectProductListStatus);
   const brands = useSelector(selectBrands);
   const categories = useSelector(selectCategories);
   const totalItems = useSelector(selectTotalItems);
@@ -44,7 +47,7 @@ export default function ProductList() {
   const [sort, setSort] = useState({});
   const [page, setPage] = useState(1); // page ki starting value 1 se start hogi.
 
-  console.log(products);
+  // console.log(products);
 
   const filters = [
     {
@@ -204,7 +207,7 @@ export default function ProductList() {
                 <DesktopFilter handleFilter={handleFilter} filters={filters} />
 
                 <div className="lg:col-span-3">
-                  <ProductGrid products={products} />
+                  <ProductGrid products={products} status={status} />
                 </div>
               </div>
             </section>
@@ -399,11 +402,23 @@ function DesktopFilter({ handleFilter, filters }) {
   );
 }
 
-function ProductGrid({ products }) {
+function ProductGrid({ products, status }) {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+          {status === "loading" ? (
+            <Grid
+              height="80"
+              width=""
+              color="rgb(79, 70, 229)"
+              ariaLabel="grid-loading"
+              radius="12.5"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          ) : null}
           {products?.map((product) => (
             <Link to={`/product-detail/${product.id}`}>
               <div
@@ -440,6 +455,17 @@ function ProductGrid({ products }) {
                     </p>
                   </div>
                 </div>
+                {product.deleted && (
+                  <div>
+                    <p className="text-sm text-red-400">product deleted</p>
+                  </div>
+                )}
+
+                {product.stock <= 0 && (
+                  <div>
+                    <p className="text-sm text-red-400">out of stock</p>
+                  </div>
+                )}
               </div>
             </Link>
           ))}

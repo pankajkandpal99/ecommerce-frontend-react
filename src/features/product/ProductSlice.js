@@ -141,7 +141,8 @@ export const productSlice = createSlice({
         const index = state.products.findIndex(
           (product) => product.id === action.payload.id
         );
-        state.products[index] = action.payload;
+        state.products[index] = action.payload;     // isse products wale main page per "product deleted" ka flag dikhayi deta hai.
+        state.selectedProduct = action.payload;     // isse edit button per click karte time Admin route per jakar to waha per jo uss perticular item ka data form ke andar available hota hai wo isi selectedProduct ke through milta hai, to jab hum ise Delete button per click kara kar isme deleted=true ka flag set kar denge to wo instantly iss state me jakar set hona chiye aur hamare deleted button per click karte hi wo product per "This product is deleted" ka flag aa jana chiye aur wo delete button hat jana chiye. 
       });
   },
 });
@@ -152,6 +153,7 @@ export const selectAllProducts = (state) => state.product.products; // ye produc
 export const selectCategories = (state) => state.product.categories; // ye category state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki category state ke andar ka data use kiya ja sake.
 export const selectBrands = (state) => state.product.brands; // ye brands state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki brands state ke andar ka data use kiya ja sake.
 export const selectedProductById = (state) => state.product.selectedProduct; // ye selectedProduct state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki selectedProduct state ke andar ka data use kiya ja sake.
+export const selectProductListStatus = (state) => state.product.status;
 export const selectTotalItems = (state) => state.product.totalItems; // ye totalItems state ko client side per available karata hai jise useSelector hook se import kiya jata hai. aur fir usme map lagaya jata hai taki totalItems state ke andar ka data use kiya ja sake.
 
 export default productSlice.reducer;

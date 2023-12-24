@@ -1,15 +1,21 @@
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   deleteItemFromCartAsync,
+  selectCartStatus,
   selectItems,
   updateCartAsync,
 } from "./CartSlice";
 import { Link, Navigate } from "react-router-dom";
 import { discountedPrice } from "../../app/constants";
+import Modal from "../common/Modal";
+import { Grid } from "react-loader-spinner";
 
 export default function Cart() {
   const items = useSelector(selectItems);
   const dispatch = useDispatch();
+  const status = useSelector(selectCartStatus);
+  const [openModal, setOpenModal] = useState(null);
 
   // console.log({ items });
 
@@ -26,7 +32,7 @@ export default function Cart() {
   };
 
   const handleRemove = (e, itemId) => {
-    e.preventDefault();
+    console.log("Remove button clicked");
     dispatch(deleteItemFromCartAsync(itemId));
   };
 
@@ -43,6 +49,18 @@ export default function Cart() {
 
             <div className="flow-root">
               <ul className="-my-6 divide-y divide-gray-200">
+                {status === "loading" ? (
+                  <Grid
+                    height="80"
+                    width=""
+                    color="rgb(79, 70, 229)"
+                    ariaLabel="grid-loading"
+                    radius="12.5"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                  />
+                ) : null}
                 {items.map((item) => (
                   <li key={item.id} className="flex py-6">
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
@@ -59,7 +77,9 @@ export default function Cart() {
                           <h3>
                             <a href={item.href}>{item.title}</a>
                           </h3>
-                          <p className="ml-4">${discountedPrice(item) * item.quantity}</p>
+                          <p className="ml-4">
+                            ${discountedPrice(item) * item.quantity}
+                          </p>
                         </div>
                         <p className="mt-1 text-sm text-gray-500">
                           {item.brand}
@@ -86,10 +106,21 @@ export default function Cart() {
                         </div>
 
                         <div className="flex">
+                          <Modal
+                            title={`Delete ${item.title}`}
+                            message="Are you sure you want to delete this cart item ?"
+                            dangerOption="Delete"
+                            cancelOption="Cancel"
+                            dangerAction={(e) => handleRemove(e, item.id)}
+                            cancelAction={() => setOpenModal(null)}
+                            showModal={openModal === item.id}
+                          />
                           <button
                             type="button"
                             className="font-medium text-indigo-600 hover:text-indigo-500"
-                            onClick={(e) => handleRemove(e, item.id)} // item.id se usi item ki id jayegi jis item per ye Remove button hoga...
+                            onClick={(e) => {
+                              setOpenModal(item.id);
+                            }}                       // item.id se usi item ki id jayegi jis item per ye Remove button hoga...
                           >
                             Remove
                           </button>

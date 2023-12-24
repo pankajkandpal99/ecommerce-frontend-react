@@ -22,6 +22,14 @@ import AdminHomePage from "./pages/AdminHomePage";
 import AdminProductDetailPage from "./pages/AdminProductDetailPage";
 import AdminProductFormPage from "./pages/AdminProductFormPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
+// react-alert -->
+import { positions, Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+
+const options = {
+  timeout: 3000,
+  position: positions.BOTTOM_LEFT,
+};
 
 const router = createBrowserRouter([
   {
@@ -138,17 +146,17 @@ function App() {
   useEffect(() => {
     // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
     if (user) {
-      // agar user hai tabhi action dispatch hoga.
       // console.log("Dispatching fetchItemsByUserIdAsync");
       dispatch(fetchItemsByUserIdAsync(user.id));
       dispatch(fetchLoggedInUserAsync(user.id));
     }
-    // console.log(user?.id);
   }, [dispatch, user]);
 
   return (
     <div className="App">
-      <RouterProvider router={router} />
+      <Provider template={AlertTemplate} {...options}>
+        <RouterProvider router={router} />
+      </Provider>
       {/* Link must be inside the Provider. */}
     </div>
   );

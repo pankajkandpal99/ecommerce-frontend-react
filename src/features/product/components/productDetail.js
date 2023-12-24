@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductByIdAsync, selectedProductById } from "../ProductSlice";
+import { fetchProductByIdAsync, selectProductListStatus, selectedProductById } from "../ProductSlice";
 import { useParams } from "react-router-dom";
-import { addToCartAsync } from "../../cart/CartSlice";
+import { addToCartAsync, selectItems } from "../../cart/CartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
+import { useAlert } from "react-alert"; // this is alert-react library which is represent the alert notification messages in UI side...
+import { Grid } from "react-loader-spinner";
 
 //  TODO : In Server data we will add color, sizes etc..
 const colors = [
@@ -42,24 +44,57 @@ export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const user = useSelector(selectLoggedInUser);
+  const items = useSelector(selectItems);
   const product = useSelector(selectedProductById); // isme redux ke ProductSlice file se data iss component me load hoga fir tab jake isme neeche loop chalake data load kiya jayega
+  const status = useSelector(selectProductListStatus);
   const params = useParams(); // jab url se iss component ko call kiya jayega to usme id ki jagah uss product ki id mentioned hogi jis roduct per click karke iss component ko call kiya ja ra hai. url se uss id ko extract karne ka kaam hi ye params hook karta hai jo ki react-router-dom ka hi part hai.
+  const alert = useAlert();
 
-  const handleCart = (event) => {
+  const handleCart = async (event) => {
     event.preventDefault();
-    const newItem = { ...product, quantity: 1, user: user.id };
-    delete newItem["id"];    // This line deletes the "id" property from the newItem object. The reason for doing this might be to ensure that the "id" property does not interfere with the process of adding the item to the cart.
-    dispatch(addToCartAsync(newItem));  // action ko dispatch kar diya, means action ko redux ko bhej diya. isme id mention nahi ki hai jise json ka server khud add karega.
+
+    const existingItemInCart = await items.findIndex(
+      (item) => item.productId === product.id
+    );
+
+    if (existingItemInCart < 0) {
+      // iska matlab hai ki existingItemInCart ne return me -1 diya hai iska matlab hai ki usne use cart me item nahi mila.
+      const newItem = {
+        ...product,
+        productId: product.id,
+        quantity: 1,
+        user: user.id,
+      };
+      delete newItem["id"]; // This line deletes the "id" field from the newItem object. The reason for doing this might be to ensure that the "id" property does not interfere with the process of adding the item to the cart.
+      dispatch(addToCartAsync(newItem)); // action ko dispatch kar diya, means action ko redux ko bhej diya. isme id mention nahi ki hai jise json ka server khud add karega.
+      // TODO: it will be based on server response if succeded then show sucess alert.
+      alert.success('Item added to your cart.');
+    } else {
+      console.log("item already available in your cart.");
+      alert.error('Item already added!');
+    }
   };
 
   // console.log(items);
 
   useEffect(() => {
     dispatch(fetchProductByIdAsync(params.id)); // ye function ProductSlice.js file se import ho ri hai, aur fir usi ko function me ProductList file se jab hum product ke kisi item per click karte hain to waha se product.id params.id ke roop me eatract hokar nikal li jati hai jo fir fetchProductByIdAsync(params.id) function ke andar dispatch kara di jati hai jo ki ProductSlice ko bhej di jati hai aur fir ProductSlice ProductApi component ko call karke server se data fetch karta hai aur fir ProductSlice ko deta hai jo ki check karta hai ki aane wale data ki state fullfilled hai ya fir pending. aur agra fulfilled hai to use update kar diya jata hai aur fir store ko updated state de di jati hai jisse useSelector use access kar leta hai aur neeche file me product me map function chalakar use use kar liya jata hai...
-  }, [dispatch, params.id]); // jaise hi ProductDetailPage ko App.js dwara call lagayi jayegi ye useEffect hook chalega, aur fetchProductByIdAsync(params.id) function redux ko dispatch kar diya jayega fir ye function jo dispatch hua hai wo ProductSlice function ko call karega
+  }, [dispatch, params.id]);                    // jaise hi ProductDetailPage ko App.js dwara call lagayi jayegi ye useEffect hook chalega, aur fetchProductByIdAsync(params.id) function redux ko dispatch kar diya jayega fir ye function jo dispatch hua hai wo ProductSlice function ko call karega
 
   return (
     <div className="bg-white">
+    {status === "loading" ? (
+            <Grid
+              height="80"
+              width=""
+              color="rgb(79, 70, 229)"
+              ariaLabel="grid-loading"
+              radius="12.5"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          ) : null}
       {product && (
         <div className="pt-6">
           <nav aria-label="Breadcrumb">

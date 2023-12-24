@@ -51,8 +51,7 @@ const AdminOrders = () => {
     setPage(page);
   };
 
-  const handleSort = (sortOption) => {
-    // ye function ko hum kisi ke basis per bhi sort kar sakte hain. jaise ki id ke basis per sort krne ke liye 'ORDER' per click karna padega jo ki table ke thead ka pehla th hai. aur totalAmount ke basis per bhi sort kar sakte hain jab hum TOTALAMOUNT per click akrte hain.
+  const handleSort = (sortOption) => {           // ye function ko hum kisi ke basis per bhi sort kar sakte hain. jaise ki id ke basis per sort krne ke liye 'ORDER' per click karna padega jo ki table ke thead ka pehla th hai. aur totalAmount ke basis per bhi sort kar sakte hain jab hum TOTALAMOUNT per click akrte hain.
     const sort = { _sort: sortOption.sort, _order: sortOption.order };
     // console.log({ sort });
     setSort(sort);
