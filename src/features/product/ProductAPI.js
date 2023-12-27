@@ -15,15 +15,6 @@ export function createProduct(product) {
   });
 }
 
-export function fetchAllProducts() {
-  // TODO: we will not hard-code server URL here...
-  return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:8080/products");
-    const data = await response.json();
-    resolve({ data });
-  });
-}
-
 // for get products from database..
 export function fetchProductById(id) {
   return new Promise(async (resolve) => {
@@ -33,7 +24,7 @@ export function fetchProductById(id) {
   });
 }
 
-export function fetchProductsByFilters(filter, sort, pagination) {
+export function fetchProductsByFilters(filter, sort, pagination, admin) {
   // filter = {"category" : ["smartphone", "laptop"]}        // aane wala data kuchh iss tarah ka hoga..
   // sort = { _sort: "price", _order="desc"}
   // pagination = {_page: 1, _limit=10}
@@ -50,7 +41,8 @@ export function fetchProductsByFilters(filter, sort, pagination) {
     }
   }
 
-  for (let key in sort) {         //  --> sort = {_sort: 'price', _order: 'asc'}
+  for (let key in sort) {
+    //  --> sort = {_sort: 'price', _order: 'asc'}
     queryString += `${key}=${sort[key]}&`; // queryString kuchh aisi ho jayegi --> _sort=price&_order=desc& --> ye aise URL me add ho jayega..
     // console.log(queryString);
   }
@@ -58,6 +50,10 @@ export function fetchProductsByFilters(filter, sort, pagination) {
   for (let key in pagination) {
     queryString += `${key}=${pagination[key]}&`; // queryString kuchh aisi ho jayegi --> _page=1&_limit=10 -> ye aise URL me add ho jayega..
     // console.log(queryString);
+  }
+
+  if (admin) {
+    queryString += `admin=true`;
   }
 
   return new Promise(async (resolve) => {

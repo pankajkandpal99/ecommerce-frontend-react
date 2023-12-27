@@ -2,7 +2,7 @@ export function fetchLoggedInUserOrders(userId) {         // ye loggedInUser uss
   console.log(userId);
   return new Promise(async (resolve) => {
     const response = await fetch(
-      `http://localhost:8080/orders/?user=${userId}`
+      `http://localhost:8080/orders/user/${userId}`
     );                                                    // iss api se jitne bhi orders uss users ke hain wo sare aapke paas aa jayenge.
     const data = await response.json();
     console.log(data);

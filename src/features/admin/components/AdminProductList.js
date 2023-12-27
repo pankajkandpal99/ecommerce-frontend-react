@@ -105,7 +105,9 @@ export default function AdminProductList() {
   useEffect(() => {
     // console.log(products);
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE }; // kyuki page koi object nahi hai to hum use direct dispatch nahi kr sakte hain, isliye humne use pagination object me dalkar set kiya hai jo json-server ka route handler use detect karega aur uske basis per hame page ke hisab se products ki list lakar de dega..
-    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination })); //Redux me useDispatch hook ka use Redux store ki state ko update karne ke liye hota hai. dispatch ka seedha sa mtlb hota hai action ko bhejna jo ki redux ki state ko update karta hai.. aur redux ki state ko access karne ke liye useSelector hook use kiya jata hai jo ki redux ki state ki information hame lake deta hai..
+    dispatch(
+      fetchProductsByFiltersAsync({ filter, sort, pagination, admin: true })
+    ); //Redux me useDispatch hook ka use Redux store ki state ko update karne ke liye hota hai. dispatch ka seedha sa mtlb hota hai action ko bhejna jo ki redux ki state ko update karta hai.. aur redux ki state ko access karne ke liye useSelector hook use kiya jata hai jo ki redux ki state ki information hame lake deta hai..
   }, [dispatch, filter, sort, page]); // Jab aap dispatch ko useEffect ke dependency array mein daalte hain, to iska matlab hai ki agar Redux store ki state mein koi bhi change hoti hai (jise dispatch ke zariye kiya ja sakta hai), tab useEffect chalega. Yeh ek powerful mechanism hai jo aapko Redux store ki state changes ko monitor karne aur uske mutabiq client-side behavior ko update karne mein madad karta hai. Dependency array mein dispatch ko include karke, aap useEffect ko specific events ke liye subscribe kar rahe hain. Isse aap apne component ko Redux store ke state ke sath sync mein rakh sakte hain, aur dynamic updates ke liye tayyar reh sakte hain jab bhi Redux store ki state badalti hai.
 
   useEffect(() => {
@@ -496,12 +498,9 @@ function ProductGrid({ products }) {
       <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {products?.map((product) => (
-            <div>
+            <div key={product.id}>
               <Link to={`/admin/product-detail/${product.id}`}>
-                <div
-                  key={product.id}
-                  className="group relative border-solid border-2 p-2 border-gray-200"
-                >
+                <div className="group relative border-solid border-2 p-2 border-gray-200">
                   <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
                     <img
                       src={product.thumbnail}
@@ -538,6 +537,11 @@ function ProductGrid({ products }) {
                   {product?.deleted && (
                     <div>
                       <p className="text-sm text-red-400">product deleted</p>
+                    </div>
+                  )}
+                  {product?.stock <= 0 && (
+                    <div>
+                      <p className="text-sm text-red-400">out of stock</p>
                     </div>
                   )}
                 </div>

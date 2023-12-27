@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Modal from "../../common/Modal";
+import { useAlert } from "react-alert";
 
 const AdminProductForm = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const AdminProductForm = () => {
   const selectedProduct = useSelector(selectedProductById);
   const [openModal, setOpenModal] = useState(null);
   const params = useParams();
+  const alert = useAlert();
   const {
     register,
     handleSubmit,
@@ -27,7 +29,7 @@ const AdminProductForm = () => {
     formState: { errors },
   } = useForm();
 
-  console.log(selectedProduct);
+  // console.log(selectedProduct);
 
   const handleDelete = () => {
     const product = { ...selectedProduct };
@@ -40,7 +42,7 @@ const AdminProductForm = () => {
     if (params.id) {
       dispatch(fetchProductByIdAsync(params.id)); // ise isliye dispatch kiya ja ra hai kyuki ek product ki bahut sari detail ho sakti hai jo ki main page per nahi jati to aise cases me trust nahi kiya ja sakta. to jab admin ke liye product-detail wala page load hoga waise hi redux me selectedProduct me data fill ho jayega jo ki database se get hokar aayega. ho sakta hai ki product hamare paas loaded ho redux me lekin ek product ki bahut detail ho sakti hai jo main page nahi aa sakti.
     } else {
-      // dispatch(clearSelectedProduct()); // jab hum Add Product button per click akrte hain tabhi selectedProduct null rahega kyuki humne kisi product per click kiya hi nahi hai. agalr click nahi kiya to params me id jayegi nahi, aur agar id nahi jayegi to selectedProduct ki detail nahi aayegi.
+      // dispatch(clearSelectedProduct()); // jab hum Add Product button per click krte hain tabhi selectedProduct null rahega kyuki humne kisi product per click kiya hi nahi hai. agar click nahi kiya to params me id jayegi nahi, aur agar id nahi jayegi to selectedProduct ki detail nahi aayegi.
     }
   }, [dispatch, params.id]);
 
@@ -65,14 +67,13 @@ const AdminProductForm = () => {
         noValidate
         onSubmit={handleSubmit((data) => {
           console.log(data);
-          // jis type se databse me data hai usi type se data put karna padega.
           const product = { ...data };
           product.images = [
             product.image1,
             product.image2,
             product.image3,
             product.thumbnail,
-          ]; // kyuki database me sari images images array ke andar hi hain to sab usi me put kar di hain. aur usme thumbnail bhi hai..
+          ];
           product.rating = 0;
           delete product["image1"];
           delete product["image2"];
@@ -89,11 +90,13 @@ const AdminProductForm = () => {
             // console.log(product.id);
             product.rating = selectedProduct.rating || 0;
             dispatch(updateProductAsync(product));
+            alert.success("Product Successfully Updated.");
             reset();
           } else {
             dispatch(createProductAsync(product));
+            alert.success("Product Successfully Created.");
+            // TODO: these alerts should check if API failed
             reset();
-            // TODO: on product successfully added clear fields and show a message.
           }
         })}
       >
@@ -104,7 +107,7 @@ const AdminProductForm = () => {
             </h2>
 
             <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              {selectedProduct?.deleted && (
+              {selectedProduct?.deleted && params.id && (
                 <h2 className="text-md text-red-500 sm:col-span-6">
                   This product is deleted
                 </h2>
@@ -191,7 +194,9 @@ const AdminProductForm = () => {
                   >
                     <option value="">-- choose category --</option>
                     {categories?.map((category) => (
-                      <option key={category.value} value={category.value}>{category.label}</option>
+                      <option key={category.value} value={category.value}>
+                        {category.label}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -458,15 +463,17 @@ const AdminProductForm = () => {
           </button>
         </div>
       </form>
-      <Modal
-        title={`Delete ${selectedProduct?.title}`}
-        message="Are you sure you want to delete this product"
-        dangerOption="Delete"
-        dangerAction={handleDelete}
-        cancelOption="Cancel"
-        cancelAction={() => setOpenModal(null)}
-        showModal={openModal}
-      />
+      {selectedProduct && (
+        <Modal
+          title={`Delete ${selectedProduct?.title}`}
+          message="Are you sure you want to delete this product"
+          dangerOption="Delete"
+          dangerAction={handleDelete}
+          cancelOption="Cancel"
+          cancelAction={() => setOpenModal(null)}
+          showModal={openModal}
+        />
+      )}
     </>
   );
 };

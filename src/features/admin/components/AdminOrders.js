@@ -28,8 +28,8 @@ const AdminOrders = () => {
     console.log("clicked pencilIcon");
     console.log(editableOrderId);
     setIsSelectBoxVisible((prevVisibility) => {
-      const newVisibility = !prevVisibility;       // Toggle the visibility  
-      setEditableOrderId(newVisibility ? order.id : -1);     // Set editableOrderId based on visibility
+      const newVisibility = !prevVisibility; // Toggle the visibility
+      setEditableOrderId(newVisibility ? order.id : -1); // Set editableOrderId based on visibility
       return newVisibility;
     });
   };
@@ -40,8 +40,7 @@ const AdminOrders = () => {
 
   const handleUpdate = (event, order) => {
     const updatedOrder = { ...order, status: event.target.value };
-    console.log([updatedOrder, event.target.value]);
-    // console.log();
+    console.log(updatedOrder);
     dispatch(updateOrderAsync(updatedOrder));
     setIsSelectBoxVisible(false);
     setEditableOrderId(-1);
@@ -51,7 +50,8 @@ const AdminOrders = () => {
     setPage(page);
   };
 
-  const handleSort = (sortOption) => {           // ye function ko hum kisi ke basis per bhi sort kar sakte hain. jaise ki id ke basis per sort krne ke liye 'ORDER' per click karna padega jo ki table ke thead ka pehla th hai. aur totalAmount ke basis per bhi sort kar sakte hain jab hum TOTALAMOUNT per click akrte hain.
+  const handleSort = (sortOption) => {
+    // ye function ko hum kisi ke basis per bhi sort kar sakte hain. jaise ki id ke basis per sort krne ke liye 'ORDER' per click karna padega jo ki table ke thead ka pehla th hai. aur totalAmount ke basis per bhi sort kar sakte hain jab hum TOTALAMOUNT per click akrte hain.
     const sort = { _sort: sortOption.sort, _order: sortOption.order };
     // console.log({ sort });
     setSort(sort);
@@ -129,7 +129,7 @@ const AdminOrders = () => {
                 </thead>
                 <tbody className="text-gray-600 text-sm font-medium bg-white">
                   {orders?.map((order) => {
-                    // console.log(order);
+                    console.log(order);
                     return (
                       <tr className="border-b border-gray-200 hover:bg-gray-100">
                         <td className="py-3 px-6 text-left whitespace-nowrap">
@@ -139,19 +139,20 @@ const AdminOrders = () => {
                           </div>
                         </td>
                         <td className="py-3 px-6 text-left">
-                          {order?.items?.map((item) => {
-                            // console.log(item);
+                          {order.items.map((item) => {
+                            console.log(item);
                             return (
                               <div className="flex items-center">
                                 <div className="mr-2">
                                   <img
                                     className="w-6 h-6 rounded-full"
-                                    src={item.thumbnail}
+                                    src={item.product.thumbnail}
+                                    alt={item.product.title}
                                   />
                                 </div>
                                 <span>
-                                  {item.title} - #{item.quantity} - $
-                                  {discountedPrice(item)}
+                                  {item.product.title} - #{item.quantity} - $
+                                  {discountedPrice(item.product)}
                                 </span>
                               </div>
                             );
