@@ -16,7 +16,7 @@ export const addToCartAsync = createAsyncThunk(
   "cart/addToCart",
   async (item) => {
     const response = await addToCart(item);
-    console.log(response);
+    // console.log(response);
     return response.data;
   }
 );
@@ -24,7 +24,9 @@ export const addToCartAsync = createAsyncThunk(
 export const fetchItemsByUserIdAsync = createAsyncThunk(
   "cart/fetchItemsByUserId",
   async (userId) => {
+    console.log(userId);
     const response = await fetchItemsByUserId(userId);
+    console.log(response.data);
     return response.data;
   }
 );
@@ -32,7 +34,9 @@ export const fetchItemsByUserIdAsync = createAsyncThunk(
 export const updateCartAsync = createAsyncThunk(
   "cart/updateCart", // Yahan "cart/updateCart" ek action type hai jo updateCartAsync ke liye generate hota hai. Jab updateCartAsync ka koi async operation chalta hai, Redux Toolkit automatic taur par in action types ko generate karta hai, jaise: "cart/updateCart/pending", "cart/updateCart/fulfilled", "cart/updateCart/rejected"... In action types ka istemal extraReducers section mein kiya jata hai, jo ki neeche kiya gaya hai.
   async (update) => {
+    console.log(update);
     const response = await updateCart(update);
+    console.log(response.data);
     return response.data;
   }
 );
@@ -107,7 +111,6 @@ export const cartSlice = createSlice({
       });
   },
 });
-
 
 // export const { increment } = cartSlice.actions;
 export const selectItems = (state) => state.cart.items;

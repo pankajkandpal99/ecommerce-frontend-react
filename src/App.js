@@ -106,7 +106,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/order-success/:id",
-    element: <OrderSuccessPage />,
+    element: (
+      <Protected>
+        <OrderSuccessPage></OrderSuccessPage>{" "}
+      </Protected>
+    ),
   },
   {
     path: "/admin/orders",
@@ -118,12 +122,20 @@ const router = createBrowserRouter([
   },
   {
     path: "/orders",
-    element: <UserOrderPage />,
+    element: (
+      <Protected>
+        <UserOrderPage></UserOrderPage>{" "}
+      </Protected>
+    ),
     // we will add page later right now using component directly.
   },
   {
     path: "/profile",
-    element: <UserProfilePage />,
+    element: (
+      <Protected>
+        <UserProfilePage></UserProfilePage>{" "}
+      </Protected>
+    ),
   },
   {
     path: "/logout",
@@ -142,6 +154,8 @@ const router = createBrowserRouter([
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
+
+  console.log(user);
 
   useEffect(() => {
     // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..

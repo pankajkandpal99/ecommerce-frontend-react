@@ -15,7 +15,6 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm(); // useForm hook ek React hook hai jo react-hook-form library ke hisaab se banaya gaya hai. Iska use form handling ke liye hota hai, jisse aap apne React forms ko easily manage kar sakte hain.
-  // console.log(errors);
 
   return (
     <>
@@ -57,7 +56,7 @@ function Login() {
                   {...register("email", {
                     required: "email is required",
                     pattern: {
-                      value: /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi,
+                      value:/\b[\w.-]+@[\w.-]+\.\w{2,4}\b/gi,
                       message: "email not valid",
                     },
                   })}

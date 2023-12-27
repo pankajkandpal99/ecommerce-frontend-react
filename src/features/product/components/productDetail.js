@@ -54,18 +54,15 @@ export default function ProductDetail() {
     event.preventDefault();
 
     const existingItemInCart = await items.findIndex(
-      (item) => item.productId === product.id
+      (item) => item.product.id === product.id
     );
 
     if (existingItemInCart < 0) {
-      // iska matlab hai ki existingItemInCart ne return me -1 diya hai iska matlab hai ki usne use cart me item nahi mila.
       const newItem = {
-        ...product,
-        productId: product.id,
+        product: product.id,
         quantity: 1,
         user: user.id,
       };
-      delete newItem["id"]; // This line deletes the "id" field from the newItem object. The reason for doing this might be to ensure that the "id" property does not interfere with the process of adding the item to the cart.
       dispatch(addToCartAsync(newItem)); // action ko dispatch kar diya, means action ko redux ko bhej diya. isme id mention nahi ki hai jise json ka server khud add karega.
       // TODO: it will be based on server response if succeded then show sucess alert.
       alert.success('Item added to your cart.');
@@ -363,8 +360,7 @@ export default function ProductDetail() {
 
                 <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                    {/* product.highlights && product.highlights.map((breadcrumb) => () */}
-                    {product?.highlights?.map((highlight) => (
+                    {highlights?.map((highlight) => (
                       <li key={highlight} className="text-gray-400">
                         <span className="text-gray-600">{highlight}</span>
                       </li>

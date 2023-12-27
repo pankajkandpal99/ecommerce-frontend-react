@@ -2,14 +2,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUserInfo, updateUserAsync } from "../userSlice";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+// import { selectLoggedInUser } from "../../auth/authSlice";
 
 export default function UserProfile() {
   const dispatch = useDispatch();
-  const user = useSelector(selectUserInfo);
+  const userInfo = useSelector(selectUserInfo); //
   const [selectedEditIndex, setSelectedEditIndex] = useState(-1); // initially index ki value -1 rahegi means ki koi value select nhi hai.
   const [showAddAddressForm, setshowAddAddressForm] = useState(false);
-  // console.log(user);
 
+  console.log(userInfo);
   // TODO: We will add payment section when we work on backend..
 
   const {
@@ -21,27 +22,24 @@ export default function UserProfile() {
   } = useForm();
 
   const handleEdit = (addressUpdate, index) => {
-    const newUser = { ...user, addresses: [...user.addresses] };
+    const newUser = { ...userInfo, addresses: [...userInfo.addresses] };
     newUser.addresses.splice(index, 1, addressUpdate); // yaha se wo element hat jayega jise hum edit karna chahte hain aur naya updated address database me jakar add ho jayega. ye same remove wala logic lagaya gaya hai yaha per, existing address ko hata rahe hain uss index per aur fir uski jagah naya updated address put kiya ja ra hai.
     dispatch(updateUserAsync(newUser));
     setSelectedEditIndex(-1);
   };
 
   const handleRemove = (event, index) => {
-    const newUser = { ...user, addresses: [...user.addresses] }; // kyuki shallow copy karte time hame nested objects ya fir arrays ki bhi copy karni padti hai kyuki shallow copy karte time kewal top-level elements hi copy hote hain aur nested elements uss real object ko hi point kar rahe hote hain jinki avi shallow copy nahi bani hui hai, isiliye yaha per addresses filed alag se copy kiya gaya hai.  Shallow copy ka istemal generally modification se bachne ke liye hota hai. Agar aap original object ko preserve karna chahte hain aur kisi operation ke baad bhi usmein changes nahi chahte hain, to shallow copy ka istemal kiya jata hai. Delete operation ke liye direct operation bhi kiya ja sakta hai, agar wahi desired behavior hai.
-    // console.log(newUser);
+    const newUser = { ...userInfo, addresses: [...userInfo.addresses] }; // kyuki shallow copy karte time hame nested objects ya fir arrays ki bhi copy karni padti hai kyuki shallow copy karte time kewal top-level elements hi copy hote hain aur nested elements uss real object ko hi point kar rahe hote hain jinki avi shallow copy nahi bani hui hai, isiliye yaha per addresses filed alag se copy kiya gaya hai.  Shallow copy ka istemal generally modification se bachne ke liye hota hai. Agar aap original object ko preserve karna chahte hain aur kisi operation ke baad bhi usmein changes nahi chahte hain, to shallow copy ka istemal kiya jata hai. Delete operation ke liye direct operation bhi kiya ja sakta hai, agar wahi desired behavior hai.
+    console.log(newUser);
     newUser.addresses.splice(index, 1); // usi address ko delete karo jiska index value address ke index value se match karta ho ..
-    dispatch(updateUserAsync(newUser)); // fir address ke uss index ko delete karne ke baad se uss address ko update kr diya jayega.
+    dispatch(updateUserAsync(newUser));
     // setSelectedEditIndex(-1);
   };
 
   const handleEditForm = (index) => {
-    // ye function edit button me click karne per ek form show karta hai, ye show ka option usi address wale field ke liye aayega jiski index value selectedEditIndex ke barabar hogi... aur uss form ke andar har field ki detail lane ka kaam iske neeche setValue wala logic karta hai jo ki react-hook-form ka hi ek part hai.
     setSelectedEditIndex(index);
-    // console.log(selectedEditIndex);      // isme index ka number aayega jo uss address ki hai database me jispar humne click kiya hai.
-    const address = user.addresses[index];
-    // console.log(address);                // isme uss index number ki value aayegi jo selectedEditIndex me stored hua hai upper.
-    setValue("name", address.name); // this setValue is the part of react-hook-form
+    const address = userInfo.addresses[index];
+    setValue("name", address.name);
     setValue("email", address.email);
     setValue("phone", address.phone);
     setValue("street", address.street);
@@ -51,7 +49,10 @@ export default function UserProfile() {
   };
 
   const handleAddAddressForm = (address) => {
-    const newAddress = { ...user, addresses: [...user.addresses, address] };
+    const newAddress = {
+      ...userInfo,
+      addresses: [...userInfo.addresses, address],
+    };
     // console.log(newAddress);
     dispatch(updateUserAsync(newAddress));
     setshowAddAddressForm(false);
@@ -71,20 +72,21 @@ export default function UserProfile() {
   return (
     <div>
       <div className="mx-auto bg-white mt-12 max-w-7xl px-4  sm:px-6 lg:px-8">
-        <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-          <h1 className="text-4xl my-6 font-bold tracking-tight text-gray-900">
-            Name: {user?.name ? user.name : "New User"}
-          </h1>
-          <h3 className="text-xl my-6 font-bold tracking-tight text-red-900">
-            email address: {user?.email}
-          </h3>
-          {user?.role === "admin" && (
+        {Object.keys(userInfo).length && (
+          <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
+            <h1 className="text-4xl my-6 font-bold tracking-tight text-gray-900">
+              Name: {userInfo.name ? userInfo.name : "New User"}
+            </h1>
             <h3 className="text-xl my-6 font-bold tracking-tight text-red-900">
-              role: {user?.role}
+              email address: {userInfo.email}
             </h3>
-          )}
-        </div>
-
+            {userInfo.role === "admin" && (
+              <h3 className="text-xl my-6 font-bold tracking-tight text-red-900">
+                role: {userInfo.role}
+              </h3>
+            )}
+          </div>
+        )}
         <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
           <button
             type="submit"
@@ -297,10 +299,10 @@ export default function UserProfile() {
           ) : null}
 
           <p className="mt-0.5 text-md text-gray-900">Your Address:</p>
-          {user?.addresses?.map((address, index) => {
+          {userInfo?.addresses?.map((address, index) => {
             // console.log(address);
             return (
-              <div>
+              <div key={index}>
                 {selectedEditIndex === index ? (
                   <form
                     className="bg-white px-5 py-12 mt-8"

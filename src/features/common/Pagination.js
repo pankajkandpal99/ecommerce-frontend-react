@@ -54,6 +54,7 @@ export default function Pagination({ page, setPage, handlePage, totalItems }) {
             {/* kyuki mujhe 1 se lekar 10 tak ke pages dikhane hain to array ki jarurat to padegi. Array.from() method ke pehle ek iterable object ya array-like object chahiye hota hai. Iske liye aapne { length: Math.ceil(totalItems / ITEMS_PER_PAGE) } diya hai. Yeh ek object hai jiska ek property length hai, aur uski value Math.ceil(totalItems / ITEMS_PER_PAGE) hai. Ismen object ki zarurat isliye padti hai kyun ki Array.from() method ek iterable object ya array-like object se seedha array create karta hai. Jab aap { length: Math.ceil(totalItems / ITEMS_PER_PAGE) } dete hain, toh Array.from() method is object ko dekhta hai, uske length property ko extract karta hai, aur phir uske basis pe ek array create karta hai. */}
             {Array.from({ length: totalPages }).map((el, index) => (
               <div
+                key={index}
                 onClick={() => handlePage(index + 1)}
                 aria-current="page"
                 className={`relative z-10 inline-flex items-center cursor-pointer ${

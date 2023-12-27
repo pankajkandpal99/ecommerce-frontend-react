@@ -6,9 +6,8 @@ import {
 } from "./userAPI";
 
 const initialState = {
-  userOrders: [],
   status: "idle",
-  userInfo: null, // This info will be used in case of detailed user info, while auth will... 
+  userInfo: null, // This info will be used in case of detailed user info, while auth will...
   // only be used for loggedInUser id etc checks..
 };
 
@@ -26,15 +25,17 @@ export const fetchLoggedInUserAsync = createAsyncThunk(
   async (userId) => {
     console.log(userId);
     const response = await fetchLoggedInUser(userId);
+    console.log(response.data);
     return response.data; // ye tabhi return hoga jab promise fulfilled ho jayega.
   }
 );
 
 export const updateUserAsync = createAsyncThunk(
   "user/updateUser",
-  async (userId) => {
-    console.log(userId);
-    const response = await updateUser(userId);
+  async (update) => {
+    console.log(update);
+    const response = await updateUser(update);
+    console.log(response.data);
     return response.data; // ye tabhi return hoga jab promise fulfilled ho jayega.
   }
 );
@@ -55,14 +56,15 @@ export const userSlice = createSlice({
       })
       .addCase(fetchLoggedInUserOrdersAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.userOrders = action.payload;
+        state.userInfo.orders = action.payload;
       })
       .addCase(updateUserAsync.pending, (state) => {
         state.status = "loading";
       })
       .addCase(updateUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.userOrders = action.payload;
+        // earlier there was loggedInUser variable in other slice...
+        state.userInfo = action.payload;
       })
       .addCase(fetchLoggedInUserAsync.pending, (state) => {
         state.status = "loading";
@@ -76,7 +78,9 @@ export const userSlice = createSlice({
 });
 
 // export const { increment } = userSlice.actions;
-export const selectUserOrders = (state) => state.user.userOrders;
+
+// TODO: change orders and address to be independent of user
+export const selectUserOrders = (state) => state.user.userInfo.orders;
 export const selectUserInfo = (state) => state.user.userInfo;
 
-export default userSlice.reducer;              // ye field userSlice ke reducer ka name field store ko deta hai jise store apne andar access karta hai.
+export default userSlice.reducer; // ye field userSlice ke reducer ka name field store ko deta hai jise store apne andar access karta hai.

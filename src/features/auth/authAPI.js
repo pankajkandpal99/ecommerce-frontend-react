@@ -1,7 +1,7 @@
 // ye post request data.json file me jayegi. jisme hum backend ka server chala rahe hain temporary.
 export function createUser(userData) {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:8080/users", {
+    const response = await fetch("http://localhost:8080/auth/signup", {
       method: "POST",
       body: JSON.stringify(userData),
       headers: { "content-type": "application/json" },
@@ -15,20 +15,26 @@ export function createUser(userData) {
 
 export function checkUser(loginInfo) {
   return new Promise(async (resolve, reject) => {
-    const email = loginInfo.email;
-    const password = loginInfo.password;
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        body: JSON.stringify(loginInfo),
+        headers: { "content-type": "application/json" },
+      });
 
-    const response = await fetch("http://localhost:8080/users?email=" + email);
-    const data = await response.json();
-    console.log({ data });
-    if (data.length) {
-      if (password === data[0].password) {
-        resolve({ data: data[0] }); // hame data array return hoga jisme har object me user ka email aur password store hoga. aur ye data.jso se aa raha hai.
+      if (response.ok) {
+        // jo bhi response 'ok' hoga wahi resolve hoga, means jo bhi response 200 type ka hoga wahi resolve hoga.
+        const data = await response.json();
+        console.log({ data });
+        resolve({ data });
       } else {
-        reject({ message: "wrong credentials" });
+        const error = await response.json();
+        console.log(error.message);
+        return reject(error);
       }
-    } else {
-      reject({ message: "user not found" });
+    } catch (error) {
+      console.log("Error occur while login --> ", err.message);
+      reject(error);
     }
   });
 }

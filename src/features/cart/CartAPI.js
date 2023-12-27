@@ -1,4 +1,5 @@
 export const addToCart = (item) => {
+  console.log(item);
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:8080/cart", {
       method: "POST",
@@ -8,23 +9,25 @@ export const addToCart = (item) => {
       },
     });
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     resolve({ data });
   });
 };
 
 // Ye function batayega ki kis user ne kon sa item cart me add kiya hai...
 export function fetchItemsByUserId(userId) {
+  console.log(userId);
   return new Promise(async (resolve) => {
     //TODO: we will not hard-code server URL here
     const response = await fetch("http://localhost:8080/cart?user=" + userId);
     const data = await response.json();
-    console.log(data);       // ye data mujhe array ke form me milega isliye isme se direct data.id access nahi ki ja sakti. agar hame har item me se id extract  karni hai to hame usme for-od loop chalana hoga jo ki array ke har ek item per chalega..
+    console.log(data); 
     resolve({ data });
   });
 }
 
 export function updateCart(update) {
+  // console.log(update);
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:8080/cart/" + update.id, {
       method: "PATCH",

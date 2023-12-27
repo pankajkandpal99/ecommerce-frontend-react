@@ -29,12 +29,12 @@ const sizes = [
   { name: "3XL", inStock: true },
 ];
 
-const highlights = [
-  "Hand cut and sewn locally",
-  "Dyed with our proprietary colors",
-  "Pre-washed & pre-shrunk",
-  "Ultra-soft 100% cotton",
-];
+// const highlights = [
+//   "Hand cut and sewn locally",
+//   "Dyed with our proprietary colors",
+//   "Pre-washed & pre-shrunk",
+//   "Ultra-soft 100% cotton",
+// ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

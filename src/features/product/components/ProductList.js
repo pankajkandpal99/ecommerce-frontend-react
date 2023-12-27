@@ -420,7 +420,7 @@ function ProductGrid({ products, status }) {
             />
           ) : null}
           {products?.map((product) => (
-            <Link to={`/product-detail/${product.id}`}>
+            <Link to={`/product-detail/${product.id}`} key={product.id}>
               <div
                 key={product.id}
                 className="group relative border-solid border-2 p-2 border-gray-200"
@@ -474,5 +474,3 @@ function ProductGrid({ products, status }) {
     </div>
   );
 }
-
-// json-server --watch data.json --port 8080

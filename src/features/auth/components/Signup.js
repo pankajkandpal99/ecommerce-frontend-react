@@ -11,7 +11,6 @@ export default function Signup() {
     handleSubmit,
     formState: { errors },
   } = useForm(); // useForm hook ek React hook hai jo react-hook-form library ke hisaab se banaya gaya hai. Iska use form handling ke liye hota hai, jisse aap apne React forms ko easily manage kar sakte hain.
-  // console.log(errors);
 
   return (
     <>
@@ -38,9 +37,9 @@ export default function Signup() {
                   email: data.email,
                   password: data.password,
                   addresses: [],
-                  role: 'user',
+                  role: "user",
                   // TODO: This role can be directly given on backend..
-                })                       // ye data jo iske andar parameters me hai wo data.json me jake save ho jayega.
+                }) // ye data jo iske andar parameters me hai wo data.json me jake save ho jayega.
               );
               console.log(data);
             })}

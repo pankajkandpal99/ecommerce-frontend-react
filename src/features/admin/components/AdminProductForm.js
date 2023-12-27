@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
-  clearSelectedProduct,
   createProductAsync,
   fetchProductByIdAsync,
   selectBrands,
@@ -59,7 +58,7 @@ const AdminProductForm = () => {
       setValue("image2", selectedProduct.images[1]);
       setValue("image3", selectedProduct.images[2]);
     }
-  }, [selectedProduct, setValue]);        // jaise hi Delete button per click kiya jata hai jo ki iss form ke last me available hai to usme delete flag true set hote hi ye useEffect chalega aur iss page me se Delete button hata dega aur "This product is deleted" wali line add kar dega.
+  }, [selectedProduct, setValue]); // jaise hi Delete button per click kiya jata hai jo ki iss form ke last me available hai to usme delete flag true set hote hi ye useEffect chalega aur iss page me se Delete button hata dega aur "This product is deleted" wali line add kar dega.
   return (
     <>
       <form
@@ -169,7 +168,9 @@ const AdminProductForm = () => {
                   >
                     <option value="">-- choose brand --</option>
                     {brands?.map((brand) => (
-                      <option value={brand.value}>{brand.label}</option>
+                      <option key={brand.value} value={brand.value}>
+                        {brand.label}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -190,7 +191,7 @@ const AdminProductForm = () => {
                   >
                     <option value="">-- choose category --</option>
                     {categories?.map((category) => (
-                      <option value={category.value}>{category.label}</option>
+                      <option key={category.value} value={category.value}>{category.label}</option>
                     ))}
                   </select>
                 </div>

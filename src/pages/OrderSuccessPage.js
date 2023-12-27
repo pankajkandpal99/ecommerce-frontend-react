@@ -11,6 +11,7 @@ const OrderSuccessPage = () => {
   const params = useParams();
 
   console.log(user?.id);
+  console.log(params.id);
 
   useEffect(() => {
     // reset cart

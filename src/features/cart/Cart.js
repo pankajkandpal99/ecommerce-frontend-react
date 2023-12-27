@@ -17,10 +17,10 @@ export default function Cart() {
   const status = useSelector(selectCartStatus);
   const [openModal, setOpenModal] = useState(null);
 
-  // console.log({ items });
+  console.log(items);
 
   const totalAmount = items.reduce(
-    (amount, item) => amount + discountedPrice(item) * item.quantity,
+    (amount, item) => discountedPrice(item.product) * item.quantity + amount,
     0
   ); // accumulator: Accumulator variable jo ki yaha per amount hai, ye har iteration mein update hota hai... currentValue: Current element of the array jo ki yaha per item hai.
 
@@ -28,7 +28,7 @@ export default function Cart() {
 
   const handleQuatity = (event, item) => {
     event.preventDefault();
-    dispatch(updateCartAsync({ ...item, quantity: +event.target.value }));
+    dispatch(updateCartAsync({ id: item.id, quantity: +event.target.value }));
   };
 
   const handleRemove = (e, itemId) => {
@@ -61,74 +61,80 @@ export default function Cart() {
                     visible={true}
                   />
                 ) : null}
-                {items.map((item) => (
-                  <li key={item.id} className="flex py-6">
-                    <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                      <img
-                        src={item.thumbnail}
-                        alt={item.title}
-                        className="h-full w-full object-cover object-center"
-                      />
-                    </div>
+                {items?.map((item) => {
+                  console.log(item);
+                  console.log(item.product);
+                  return (
+                    <li key={item.id} className="flex py-6">
+                      <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                        <img
+                          src={item?.product?.thumbnail}
+                          alt={item?.product?.title}
+                          className="h-full w-full object-cover object-center"
+                        />
+                      </div>
 
-                    <div className="ml-4 flex flex-1 flex-col">
-                      <div>
-                        <div className="flex justify-between text-base font-medium text-gray-900">
-                          <h3>
-                            <a href={item.href}>{item.title}</a>
-                          </h3>
-                          <p className="ml-4">
-                            ${discountedPrice(item) * item.quantity}
+                      <div className="ml-4 flex flex-1 flex-col">
+                        <div>
+                          <div className="flex justify-between text-base font-medium text-gray-900">
+                            <h3>
+                              <a href={item?.product?.title}>
+                                {item?.product?.title}
+                              </a>
+                            </h3>
+                            <p className="ml-4">
+                              ${discountedPrice(item?.product) * item.quantity}
+                            </p>
+                          </div>
+                          <p className="mt-1 text-sm text-gray-500">
+                            {item?.product?.brand}
                           </p>
                         </div>
-                        <p className="mt-1 text-sm text-gray-500">
-                          {item.brand}
-                        </p>
-                      </div>
-                      <div className="flex flex-1 items-end justify-between text-sm mb-2">
-                        <div className="text-gray-500">
-                          <label
-                            htmlFor="quantity"
-                            className="inline mr-5 text-sm font-medium loading-6 text-gray-900"
-                          >
-                            Qty
-                          </label>
-                          <select
-                            value={item.quantity}
-                            onChange={(e) => handleQuatity(e, item)}
-                          >
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                          </select>
-                        </div>
+                        <div className="flex flex-1 items-end justify-between text-sm mb-2">
+                          <div className="text-gray-500">
+                            <label
+                              htmlFor="quantity"
+                              className="inline mr-5 text-sm font-medium loading-6 text-gray-900"
+                            >
+                              Qty
+                            </label>
+                            <select
+                              value={item.quantity}
+                              onChange={(e) => handleQuatity(e, item)}
+                            >
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                            </select>
+                          </div>
 
-                        <div className="flex">
-                          <Modal
-                            title={`Delete ${item.title}`}
-                            message="Are you sure you want to delete this cart item ?"
-                            dangerOption="Delete"
-                            cancelOption="Cancel"
-                            dangerAction={(e) => handleRemove(e, item.id)}
-                            cancelAction={() => setOpenModal(null)}
-                            showModal={openModal === item.id}
-                          />
-                          <button
-                            type="button"
-                            className="font-medium text-indigo-600 hover:text-indigo-500"
-                            onClick={(e) => {
-                              setOpenModal(item.id);
-                            }}                       // item.id se usi item ki id jayegi jis item per ye Remove button hoga...
-                          >
-                            Remove
-                          </button>
+                          <div className="flex">
+                            <Modal
+                              title={`Delete ${item?.product?.title}`}
+                              message="Are you sure you want to delete this cart item ?"
+                              dangerOption="Delete"
+                              cancelOption="Cancel"
+                              dangerAction={(e) => handleRemove(e, item.id)}
+                              cancelAction={() => setOpenModal(null)}
+                              showModal={openModal === item.id}
+                            />
+                            <button
+                              type="button"
+                              className="font-medium text-indigo-600 hover:text-indigo-500"
+                              onClick={(e) => {
+                                setOpenModal(item.id);
+                              }} // item.id se usi item ki id jayegi jis item per ye Remove button hoga...
+                            >
+                              Remove
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>
