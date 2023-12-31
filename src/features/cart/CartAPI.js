@@ -1,5 +1,4 @@
 export const addToCart = (item) => {
-  console.log(item);
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:8080/cart", {
       method: "POST",
@@ -14,12 +13,11 @@ export const addToCart = (item) => {
   });
 };
 
-// Ye function batayega ki kis user ne kon sa item cart me add kiya hai...
-export function fetchItemsByUserId(userId) {
-  console.log(userId);
+// Ye function batayega ki kis user ne kon sa item cart me add kiya hai... isme id ki koi jarurat ni hai kyuki server khud bata dega ki kon sa user loggedIn hai yaha se koi id send karne ki jarurat ni hai... backend me de-serialization yahi kaam kar raha hai ki wo session me se stored id ko retrieve karke req.user me daal ra hai jisse database me uss userId jo ki req.user me aayi hai usse data fetch hoga.
+export function fetchItemsByUserId() {
   return new Promise(async (resolve) => {
     //TODO: we will not hard-code server URL here
-    const response = await fetch("http://localhost:8080/cart?user=" + userId);
+    const response = await fetch("http://localhost:8080/cart");  
     const data = await response.json();
     console.log(data); 
     resolve({ data });
@@ -54,11 +52,9 @@ export function deleteItemFromCart(itemId) {
   });
 }
 
-export function resetCart(userId) {
-  // console.log(userId);        // here we got userId
-  // get all items of user's cart and then delete each.
+export function resetCart() {              // get all items of user's cart and then delete each.
   return new Promise(async (resolve) => {
-    const response = await fetchItemsByUserId(userId);
+    const response = await fetchItemsByUserId();
     const items = response.data; // loggedInUser ke cart me add kiye hue sare items yaha aa jayenge.
     // console.log(items);
 

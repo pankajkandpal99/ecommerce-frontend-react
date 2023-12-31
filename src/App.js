@@ -26,7 +26,7 @@ import AdminOrdersPage from "./pages/AdminOrdersPage";
 import { positions, Provider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
 
-const options = {
+const options = {    
   timeout: 3000,
   position: positions.BOTTOM_LEFT,
 };
@@ -155,14 +155,13 @@ function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
 
-  console.log(user);
+  // console.log(user);  // isme server se token aayega jo ki server side per check hoga, fir client ko next page per bheja jayega.
 
-  useEffect(() => {
-    // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
+  useEffect(() => { // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
     if (user) {
-      // console.log("Dispatching fetchItemsByUserIdAsync");
-      dispatch(fetchItemsByUserIdAsync(user.id));
-      dispatch(fetchLoggedInUserAsync(user.id));
+      // we can get req.user by token on backend so no need to give in front-end
+      dispatch(fetchItemsByUserIdAsync());
+      dispatch(fetchLoggedInUserAsync());
     }
   }, [dispatch, user]);
 

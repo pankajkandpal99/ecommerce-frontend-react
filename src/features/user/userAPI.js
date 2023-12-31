@@ -1,19 +1,15 @@
-export function fetchLoggedInUserOrders(userId) {         // ye loggedInUser uss user se related sari information fetch kar lega jaise ki addresses, ordres etc..
-  console.log(userId);
+export function fetchLoggedInUserOrders() {     // ye loggedInUser uss user se related sari information fetch kar lega jaise ki addresses, ordres etc..
   return new Promise(async (resolve) => {
-    const response = await fetch(
-      `http://localhost:8080/orders/user/${userId}`
-    );                                                    // iss api se jitne bhi orders uss users ke hain wo sare aapke paas aa jayenge.
+    const response = await fetch(`http://localhost:8080/orders/own`); // iss api se jitne bhi orders uss users ke hain wo sare aapke paas aa jayenge.
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     resolve({ data });
   });
 }
 
-export function fetchLoggedInUser(userId) {
-  console.log(userId);
+export function fetchLoggedInUser() {
   return new Promise(async (resolve) => {
-    const response = await fetch(`http://localhost:8080/users/${userId}`);
+    const response = await fetch(`http://localhost:8080/users/own`);
     const data = response.json();
     console.log({ data });
     resolve({ data });

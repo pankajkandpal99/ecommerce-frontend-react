@@ -8,7 +8,6 @@ import {
 } from "../../product/ProductSlice";
 import { useParams } from "react-router-dom";
 import { addToCartAsync } from "../../cart/CartSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
 
 // TODO : In Server data we will add color, sizes etc..
@@ -29,12 +28,12 @@ const sizes = [
   { name: "3XL", inStock: true },
 ];
 
-// const highlights = [
-//   "Hand cut and sewn locally",
-//   "Dyed with our proprietary colors",
-//   "Pre-washed & pre-shrunk",
-//   "Ultra-soft 100% cotton",
-// ];
+const highlights = [
+  "Hand cut and sewn locally",
+  "Dyed with our proprietary colors",
+  "Pre-washed & pre-shrunk",
+  "Ultra-soft 100% cotton",
+];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -44,13 +43,12 @@ export default function AdminProductDetail() {
   const dispatch = useDispatch();
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
-  const user = useSelector(selectLoggedInUser);
   const product = useSelector(selectedProductById); // isme redux ke ProductSlice file se data iss component me load hoga fir tab jake isme neeche loop chalake data load kiya jayega
   const params = useParams(); // jab url se iss component ko call kiya jayega to usme id ki jagah uss product ki id mentioned hogi jis roduct per click karke iss component ko call kiya ja ra hai. url se uss id ko extract karne ka kaam hi ye params hook karta hai jo ki react-router-dom ka hi part hai.
 
   const handleCart = (event) => {
     event.preventDefault();
-    const newItem = { ...product, quantity: 1, user: user.id };
+    const newItem = { ...product, quantity: 1 };
     delete newItem["id"]; // This line deletes the "id" property from the newItem object. The reason for doing this might be to ensure that the "id" property does not interfere with the process of adding the item to the cart.
     dispatch(addToCartAsync(newItem)); // action ko dispatch kar diya, means action ko redux ko bhej diya. isme id mention nahi ki hai jise json ka server khud add karega.
   };
@@ -336,7 +334,7 @@ export default function AdminProductDetail() {
                 <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
                     {/* product.highlights && product.highlights.map((breadcrumb) => () */}
-                    {product?.highlights?.map((highlight) => (
+                    {highlights?.map((highlight) => (
                       <li key={highlight} className="text-gray-400">
                         <span className="text-gray-600">{highlight}</span>
                       </li>

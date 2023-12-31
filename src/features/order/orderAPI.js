@@ -14,7 +14,7 @@ export function createOrder(order) {
 }
 
 export function updateOrder(order) {
-  // console.log(order);
+  console.log(order);
   return new Promise(async (resolve) => {
     const response = await fetch(`http://localhost:8080/orders/${order.id}`, {
       method: "PATCH",
@@ -54,4 +54,10 @@ export function fetchAllOrders(sort, pagination) {
     const totalOrders = await response.headers.get("X-Total-Count");
     resolve({ data: { orders: data, totalOrders: +totalOrders } });
   });
+}
+
+export function RemoveOrder(orderID){
+  return new Promise(async (resolve) => {
+    const response = await fetch(``)
+  })
 }

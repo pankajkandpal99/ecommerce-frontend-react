@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   createProduct,
-  fetchAllProducts,
   fetchBrands,
   fetchCategories,
   fetchProductById,
@@ -21,7 +20,7 @@ const initialState = {
 export const createProductAsync = createAsyncThunk(
   "product/createProduct",
   async (update) => {
-    console.log(product);
+    console.log(update);
     const response = await createProduct(update);
     return response.data;
   }

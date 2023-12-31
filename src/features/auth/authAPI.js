@@ -25,15 +25,15 @@ export function checkUser(loginInfo) {
       if (response.ok) {
         // jo bhi response 'ok' hoga wahi resolve hoga, means jo bhi response 200 type ka hoga wahi resolve hoga.
         const data = await response.json();
-        console.log({ data });
+        // console.log( data );
         resolve({ data });
       } else {
-        const error = await response.json();
+        const error = await response.text();
         console.log(error.message);
         return reject(error);
       }
     } catch (error) {
-      console.log("Error occur while login --> ", err.message);
+      console.log("Error occur while login --> ", error.message);
       reject(error);
     }
   });

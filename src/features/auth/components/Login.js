@@ -7,15 +7,15 @@ function Login() {
   const error = useSelector(selectError);
   const user = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
-
-  // console.log(user);
-
+ 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm(); // useForm hook ek React hook hai jo react-hook-form library ke hisaab se banaya gaya hai. Iska use form handling ke liye hota hai, jisse aap apne React forms ko easily manage kar sakte hain.
-
+  
+  // console.log(user);
+  
   return (
     <>
       {user && <Navigate to="/" replace={true} />}
@@ -56,7 +56,7 @@ function Login() {
                   {...register("email", {
                     required: "email is required",
                     pattern: {
-                      value:/\b[\w.-]+@[\w.-]+\.\w{2,4}\b/gi,
+                      value: /\b[\w.-]+@[\w.-]+\.\w{2,4}\b/gi,
                       message: "email not valid",
                     },
                   })}
@@ -79,7 +79,7 @@ function Login() {
                 </label>
                 <div className="text-sm">
                   <Link
-                    to='/forgot-password'
+                    to="/forgot-password"
                     className="font-semibold text-indigo-600 hover:text-indigo-500"
                   >
                     Forgot password?
@@ -100,7 +100,9 @@ function Login() {
                   <p className="text-red-500">{errors.password.message}</p>
                 )}
               </div>
-              {error && <p className="text-red-500">{error.message}</p>}
+              {error && (
+                <p className="text-red-500">{error || error.message}</p>
+              )}
             </div>
 
             <div>

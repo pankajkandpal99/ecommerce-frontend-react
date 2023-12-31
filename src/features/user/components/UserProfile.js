@@ -308,7 +308,7 @@ export default function UserProfile() {
                     className="bg-white px-5 py-12 mt-8"
                     noValidate
                     onSubmit={handleSubmit((data) => {
-                      console.log(data);
+                      // console.log(data);
                       handleEdit(data, index);
                       reset(); // form jaise hi submit ho jata hai ye form field ko reset kar dega usi time.
                     })}

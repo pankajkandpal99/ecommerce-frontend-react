@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { checkUser, createUser, signOut } from "./authAPI";
 
 const initialState = {
-  loggedInUser: null,        // this should only contain user identity => 'id', 'email', 'role'... user se related loggedInUser me nahi rahengi...
+  loggedInUserToken: null,        // this should only contain user identity => 'id', 'email', 'role'... user se related loggedInUser me nahi rahengi...
   status: "idle",
   error: null,
 };
@@ -48,7 +48,7 @@ export const signOutAsync = createAsyncThunk("user/sigOut", async (userId) => {
 
 export const authSlice = createSlice({
   name: "user", // <-- This is the slice name
-  initialState, 
+  initialState: initialState, 
   reducers: {
     // increment: (state) => {
     //   state.value += 1;
@@ -62,14 +62,14 @@ export const authSlice = createSlice({
       })
       .addCase(createUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.loggedInUser = action.payload;
+        state.loggedInUserToken = action.payload;
       })
       .addCase(checkUserAsync.pending, (state) => {
         state.status = "loading";
       })
       .addCase(checkUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.loggedInUser = action.payload;
+        state.loggedInUserToken = action.payload;
       })
       .addCase(checkUserAsync.rejected, (state, action) => {
         state.status = "idle";
@@ -80,25 +80,12 @@ export const authSlice = createSlice({
       })
       .addCase(signOutAsync.fulfilled, (state) => {
         state.status = "idle";
-        state.loggedInUser = null;
+        state.loggedInUserToken = null;
       });
   },
 });
 
-export const selectLoggedInUser = (state) => state.auth.loggedInUser; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho.. isme state.auth.loggedInUser me auth isliye aaya hai kyuki ye reducer ka naam hai.
+export const selectLoggedInUser = (state) => state.auth.loggedInUserToken; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho.. isme state.auth.loggedInUser me auth isliye aaya hai kyuki ye reducer ka naam hai.
 export const selectError = (state) => state.auth.error; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho..
 
 export default authSlice.reducer;
-
-
-
-
-// .addCase(updateUserAsync.pending, (state) => {
-//   state.status = "loading";
-// })
-// .addCase(updateUserAsync.fulfilled, (state, action) => {
-//   state.status = "idle";
-//   // const index = state.loggedInUser.findIndex((user) => user.id === action.payload.id);
-//   // state.loggedInUser[index] += action.payload
-//   state.loggedInUser = action.payload;
-// })
