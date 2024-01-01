@@ -14,7 +14,11 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import UserOrderPage from "./pages/UserOrderPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import { fetchLoggedInUserAsync } from "./features/user/userSlice";
-import { selectLoggedInUser } from "./features/auth/authSlice";
+import {
+  checkAuthAsync,
+  selectLoggedInUser,
+  selectUserChecked,
+} from "./features/auth/authSlice";
 import Logout from "./features/auth/components/Logout";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ProtectedAdmin from "./features/auth/components/ProtectedAdmin";
@@ -26,7 +30,7 @@ import AdminOrdersPage from "./pages/AdminOrdersPage";
 import { positions, Provider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
 
-const options = {    
+const options = {
   timeout: 3000,
   position: positions.BOTTOM_LEFT,
 };
@@ -154,10 +158,17 @@ const router = createBrowserRouter([
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
+  const userChecked = useSelector(selectUserChecked);
 
   // console.log(user);  // isme server se token aayega jo ki server side per check hoga, fir client ko next page per bheja jayega.
+  console.log(userChecked);
 
-  useEffect(() => { // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
+  useEffect(() => {
+    dispatch(checkAuthAsync());
+  }, [dispatch]);
+
+  useEffect(() => {
+    // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
     if (user) {
       // we can get req.user by token on backend so no need to give in front-end
       dispatch(fetchItemsByUserIdAsync());
@@ -168,7 +179,7 @@ function App() {
   return (
     <div className="App">
       <Provider template={AlertTemplate} {...options}>
-        <RouterProvider router={router} />
+        {userChecked && <RouterProvider router={router} />}
       </Provider>
       {/* Link must be inside the Provider. */}
     </div>

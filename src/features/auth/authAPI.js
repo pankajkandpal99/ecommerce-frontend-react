@@ -13,7 +13,7 @@ export function createUser(userData) {
   });
 }
 
-export function checkUser(loginInfo) {
+export function loginUser(loginInfo) {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await fetch("http://localhost:8080/auth/login", {
@@ -23,7 +23,6 @@ export function checkUser(loginInfo) {
       });
 
       if (response.ok) {
-        // jo bhi response 'ok' hoga wahi resolve hoga, means jo bhi response 200 type ka hoga wahi resolve hoga.
         const data = await response.json();
         // console.log( data );
         resolve({ data });
@@ -36,6 +35,14 @@ export function checkUser(loginInfo) {
       console.log("Error occur while login --> ", error.message);
       reject(error);
     }
+  });
+}
+
+export function checkAuth() {
+  return new Promise(async (resolve) => {
+    const response = await fetch(`http://localhost:8080/auth/check`);
+    const data = await response.json();
+    resolve({ data });
   });
 }
 
