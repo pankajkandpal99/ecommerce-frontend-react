@@ -46,8 +46,8 @@ export function checkAuth() {
   });
 }
 
-export function signOut(userId) {
-  console.log(userId);
+export function signOut() {
+  console.log();
   return new Promise(async (resolve) => {
     // TODO: on server we will remove user session info.
     resolve({ data: "success" });

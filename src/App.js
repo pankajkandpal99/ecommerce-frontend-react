@@ -29,6 +29,7 @@ import AdminOrdersPage from "./pages/AdminOrdersPage";
 // react-alert -->
 import { positions, Provider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
+import StripeCheckout from "./pages/StripeCheckout";
 
 const options = {
   timeout: 3000,
@@ -125,10 +126,19 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/stripe-checkout/",
+    element: (
+      <Protected>
+        <StripeCheckout />
+      </Protected>
+    ),
+    // we will add page later right now using component directly.
+  },
+  {
     path: "/orders",
     element: (
       <Protected>
-        <UserOrderPage></UserOrderPage>{" "}
+        <UserOrderPage></UserOrderPage>
       </Protected>
     ),
     // we will add page later right now using component directly.
@@ -141,6 +151,7 @@ const router = createBrowserRouter([
       </Protected>
     ),
   },
+
   {
     path: "/logout",
     element: <Logout />,

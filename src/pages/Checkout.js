@@ -70,7 +70,7 @@ export default function Checkout() {
         user: user.id,
         paymentMethod,
         selectedAddress,
-        status: "pending",         // other status can be delivered, received. // status dene ka reason ye hai ki ise admin order ko track karke use change kar sakta hai.
+        status: "pending", // other status can be delivered, received. // status dene ka reason ye hai ki ise admin order ko track karke use change kar sakta hai.
       };
       console.log(order);
       dispatch(createOrderAsync(order));
@@ -86,8 +86,12 @@ export default function Checkout() {
   return (
     <>
       {!items.length && <Navigate to="/" replace={true} />}
-      {currentOrder && (
+      {currentOrder && currentOrder.paymentMethod === "cash" && (
         <Navigate to={`/order-success/${currentOrder.id}`} replace={true} />
+      )}
+
+      {currentOrder && currentOrder.paymentMethod === "card" && (
+        <Navigate to={`/stripe-checkout/`} replace={true} />
       )}
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -404,67 +408,64 @@ export default function Checkout() {
                     {items.map((item) => {
                       console.log(item);
                       return (
-                        <>
-                          <li key={item.id} className="flex py-6">
-                            <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                              <img
-                                src={item.product.thumbnail}
-                                alt={item.product.title}
-                                className="h-full w-full object-cover object-center"
-                              />
-                            </div>
+                        <li key={item.id} className="flex py-6">
+                          <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                            <img
+                              src={item.product.thumbnail}
+                              alt={item.product.title}
+                              className="h-full w-full object-cover object-center"
+                            />
+                          </div>
 
-                            <div className="ml-4 flex flex-1 flex-col">
-                              <div>
-                                <div className="flex justify-between text-base font-medium text-gray-900">
-                                  <h3>
-                                    <a href={item.product.id}>
-                                      {item.product.title}
-                                    </a>
-                                  </h3>
-                                  <p className="ml-4">
-                                    $
-                                    {discountedPrice(item.product) *
-                                      item.quantity}
-                                  </p>
-                                </div>
-                                <p className="mt-1 text-sm text-gray-500">
-                                  {item.product.brand}
+                          <div className="ml-4 flex flex-1 flex-col">
+                            <div>
+                              <div className="flex justify-between text-base font-medium text-gray-900">
+                                <h3>
+                                  <a href={item.product.id}>
+                                    {item.product.title}
+                                  </a>
+                                </h3>
+                                <p className="ml-4">
+                                  $
+                                  {discountedPrice(item.product)}
                                 </p>
                               </div>
-                              <div className="flex flex-1 items-end justify-between text-sm mb-2">
-                                <div className="text-gray-500">
-                                  <label
-                                    htmlFor="quantity"
-                                    className="inline mr-5 text-sm font-medium loading-6 text-gray-900"
-                                  >
-                                    Qty
-                                  </label>
-                                  <select
-                                    value={item.quantity}
-                                    onChange={(e) => handleQuatity(e, item)}
-                                  >
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                  </select>
-                                </div>
+                              <p className="mt-1 text-sm text-gray-500">
+                                {item.product.brand}
+                              </p>
+                            </div>
+                            <div className="flex flex-1 items-end justify-between text-sm mb-2">
+                              <div className="text-gray-500">
+                                <label
+                                  htmlFor="quantity"
+                                  className="inline mr-5 text-sm font-medium loading-6 text-gray-900"
+                                >
+                                  Qty
+                                </label>
+                                <select
+                                  value={item.quantity}
+                                  onChange={(e) => handleQuatity(e, item)}
+                                >
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                  <option value="5">5</option>
+                                </select>
+                              </div>
 
-                                <div className="flex">
-                                  <button
-                                    type="button"
-                                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                                    onClick={(e) => handleRemove(e, item.id)} // item.id se usi item ki id jayegi jis item per ye Remove button hoga...
-                                  >
-                                    Remove
-                                  </button>
-                                </div>
+                              <div className="flex">
+                                <button
+                                  type="button"
+                                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                                  onClick={(e) => handleRemove(e, item.id)} // item.id se usi item ki id jayegi jis item per ye Remove button hoga...
+                                >
+                                  Remove
+                                </button>
                               </div>
                             </div>
-                          </li>
-                        </>
+                          </div>
+                        </li>
                       );
                     })}
                   </ul>
