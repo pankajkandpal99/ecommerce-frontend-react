@@ -34,7 +34,7 @@ export const loginUserAsync = createAsyncThunk(
 export const checkAuthAsync = createAsyncThunk("user/checkAuth", async () => {
   try {
     const response = await checkAuth();
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   } catch (err) {
     console.log(err.message);
@@ -43,7 +43,7 @@ export const checkAuthAsync = createAsyncThunk("user/checkAuth", async () => {
 
 export const signOutAsync = createAsyncThunk("user/sigOut", async () => {
   const response = await signOut();
-  console.log(response.data);
+  console.log("sign out -> ", response.data);
   return response.data;
 });
 

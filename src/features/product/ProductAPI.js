@@ -1,9 +1,7 @@
-// ye 2 functions hain jo products ko json-server se fetch kar rahe hain... fetchAllProducts() function sabhi products ko fetch karta hai aur dusra function fetchProductsByFilters(filter, sort) filters aur sort ke basis par products ko fetch karta hai
-
 export function createProduct(product) {
   console.log(product);
   return new Promise(async (resolve) => {
-    const response = await fetch(`http://localhost:8080/products/`, {
+    const response = await fetch(`/products/`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(product),
@@ -18,7 +16,7 @@ export function createProduct(product) {
 // for get products from database..
 export function fetchProductById(id) {
   return new Promise(async (resolve) => {
-    const response = await fetch(`http://localhost:8080/products/${id}`);
+    const response = await fetch(`/products/${id}`);
     const data = await response.json();
     resolve({ data });
   });
@@ -29,7 +27,6 @@ export function fetchProductsByFilters(filter, sort, pagination, admin) {
   // sort = { _sort: "price", _order="desc"}
   // pagination = {_page: 1, _limit=10}
   // TODO: on server we will support multi values
-  // TODO: Server will filter deletedd products in case of non-admin
 
   let queryString = "";
   for (let key in filter) {
@@ -58,7 +55,7 @@ export function fetchProductsByFilters(filter, sort, pagination, admin) {
 
   return new Promise(async (resolve) => {
     const response = await fetch(
-      `http://localhost:8080/products?${queryString}`
+      `/products?${queryString}`
     );
     const data = await response.json();
     const totalItems = await response.headers.get("X-Total-Count"); // ye 'X-Total-Count' hame json-server hi deta hai response me jo ki ye batata hai ki kitne products abhi available hain.
@@ -68,7 +65,7 @@ export function fetchProductsByFilters(filter, sort, pagination, admin) {
 
 export function fetchCategories() {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:8080/categories");
+    const response = await fetch("/categories");
     const data = await response.json();
     resolve({ data });
   });
@@ -76,7 +73,7 @@ export function fetchCategories() {
 
 export function fetchBrands() {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:8080/brands");
+    const response = await fetch("/brands");
     const data = await response.json();
     resolve({ data });
   });
@@ -86,7 +83,7 @@ export function fetchBrands() {
 export function updateProduct(update) {
   return new Promise(async (resolve) => {
     const response = await fetch(
-      `http://localhost:8080/products/${update.id}`,
+      `/products/${update.id}`,
       {
         method: "PATCH",
         headers: { "content-type": "application/json" },

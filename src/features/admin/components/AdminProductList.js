@@ -37,7 +37,6 @@ function classNames(...classes) {
 }
 
 export default function AdminProductList() {
-  // iss component to HomePage ke andar '/' route per call kiya ja ra hai ...
   const dispatch = useDispatch();
   const products = useSelector(selectAllProducts);
   const brands = useSelector(selectBrands);
@@ -46,7 +45,7 @@ export default function AdminProductList() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
-  const [page, setPage] = useState(1); // page ki starting value 1 se start hogi.
+  const [page, setPage] = useState(1); 
 
   // console.log(products);
 
@@ -65,13 +64,10 @@ export default function AdminProductList() {
   ];
 
   const handleFilter = (event, section, option) => {
-    // console.log(event.target.checked);     // ye filter karte time checked/unchecked karne ke liye hai ...
     let newFilter = { ...filter };
     // TODO : on server it will support multiple categories..
     if (event.target.checked) {
-      // iske andar ka code tab execute hoga jab user checkbox per check karega...
-      if (newFilter[section.id]) {
-        // ye condition check karti hai ki kon se section per use dwara click kiya gaya hai. agar user wo section per click karta hai jis per wo ek baar click kar chuka hai to if ke andar ka code execute hoga aur uske existing newFilter object me option ki value ko update karega... section ka matlab hai ki 'Category aur Brands'... aur Option wo object hai jiske andar Category aur Brands ki details hain. option upper filter array me already defined hain..
+      if (newFilter[section.id]) {                // ye condition check karti hai ki kon se section per use dwara click kiya gaya hai. agar user wo section per click karta hai jis per wo ek baar click kar chuka hai to if ke andar ka code execute hoga aur uske existing newFilter object me option ki value ko update karega... section ka matlab hai ki 'Category aur Brands'... aur Option wo object hai jiske andar Category aur Brands ki details hain. option upper filter array me already defined hain..
         newFilter[section.id].push(option.value); // Suppose aapne pehle "Category" mein "smartphones" ko select kiya, to newFilter aise dikhega: newFilter = { newFilter =  category: ["smartphones"]} .... Phir aapne "Brands" mein "Apple" aur "Samsung" ko select kiya, to newFilter update hoga: {category: ["smartphones"], brand: ["Apple", "Samsung"]}. Is tarah se, newFilter multiple checkboxes ke values ko track karega aur aapko saare selected filters ka ek snapshot provide karega.
       } else {
         // agar user pehle brand per click karta hai aur fir category wale section per click karta hai to iska matlab hai ki newFiler jo ki existing section aur uski values ko object me store karta hai(section.id ke sath) uske andar 'section.id' nahi hai... agr aisa hai to else ke andar ka code execute hoga aur jisme wo newFilter object ke andar user dwara select ki gayi section ki id ko store karega aur uske saath uski value ko bhi array ke andar put karega...
@@ -107,7 +103,7 @@ export default function AdminProductList() {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE }; // kyuki page koi object nahi hai to hum use direct dispatch nahi kr sakte hain, isliye humne use pagination object me dalkar set kiya hai jo json-server ka route handler use detect karega aur uske basis per hame page ke hisab se products ki list lakar de dega..
     dispatch(
       fetchProductsByFiltersAsync({ filter, sort, pagination, admin: true })
-    ); //Redux me useDispatch hook ka use Redux store ki state ko update karne ke liye hota hai. dispatch ka seedha sa mtlb hota hai action ko bhejna jo ki redux ki state ko update karta hai.. aur redux ki state ko access karne ke liye useSelector hook use kiya jata hai jo ki redux ki state ki information hame lake deta hai..
+    );                 //Redux me useDispatch hook ka use Redux store ki state ko update karne ke liye hota hai. dispatch ka seedha sa mtlb hota hai action ko bhejna jo ki redux ki state ko update karta hai.. aur redux ki state ko access karne ke liye useSelector hook use kiya jata hai jo ki redux ki state ki information hame lake deta hai..
   }, [dispatch, filter, sort, page]); // Jab aap dispatch ko useEffect ke dependency array mein daalte hain, to iska matlab hai ki agar Redux store ki state mein koi bhi change hoti hai (jise dispatch ke zariye kiya ja sakta hai), tab useEffect chalega. Yeh ek powerful mechanism hai jo aapko Redux store ki state changes ko monitor karne aur uske mutabiq client-side behavior ko update karne mein madad karta hai. Dependency array mein dispatch ko include karke, aap useEffect ko specific events ke liye subscribe kar rahe hain. Isse aap apne component ko Redux store ke state ke sath sync mein rakh sakte hain, aur dynamic updates ke liye tayyar reh sakte hain jab bhi Redux store ki state badalti hai.
 
   useEffect(() => {

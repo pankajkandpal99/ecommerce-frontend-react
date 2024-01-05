@@ -7,15 +7,15 @@ function Login() {
   const error = useSelector(selectError);
   const user = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
- 
+
+  // console.log(user);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(); // useForm hook ek React hook hai jo react-hook-form library ke hisaab se banaya gaya hai. Iska use form handling ke liye hota hai, jisse aap apne React forms ko easily manage kar sakte hain.
-  
-  // console.log(user);
-  
+  } = useForm(); 
+
   return (
     <>
       {user && <Navigate to="/" replace={true} />}

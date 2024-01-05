@@ -8,13 +8,13 @@ const OrderSuccessPage = () => {
   const dispatch = useDispatch();
   const params = useParams();
 
-  console.log(params.id);
+  // console.log(params.id);
 
   useEffect(() => {
     // reset cart
     dispatch(resetCartAsync());
     // reset currentOrder
-    dispatch(resetOrder());            // resetOrder reducer inside the createSlice function...
+    dispatch(resetOrder()); // resetOrder reducer inside the createSlice function...
   }, [dispatch]);
 
   return (

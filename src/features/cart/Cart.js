@@ -19,9 +19,9 @@ export default function Cart() {
   const status = useSelector(selectCartStatus);
   const [openModal, setOpenModal] = useState(null);
 
-  console.log(items);
+  // console.log(items);
   console.log(cartLoaded);
- 
+
   const totalAmount = items.reduce(
     (amount, item) => discountedPrice(item.product) * item.quantity + amount,
     0
@@ -41,7 +41,7 @@ export default function Cart() {
 
   return (
     <>
-      {!items?.length && cartLoaded && <Navigate to="/" replace={true} />}
+      {!items.length && cartLoaded && <Navigate to="/" replace={true} />}
 
       <div>
         <div className="mx-auto bg-white mt-12 max-w-7xl px-4  sm:px-6 lg:px-8">
@@ -65,8 +65,7 @@ export default function Cart() {
                   />
                 ) : null}
                 {items?.map((item) => {
-                  console.log(item);
-                  console.log(item.product);
+                  // console.log(item);
                   return (
                     <li key={item.id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">

@@ -12,7 +12,7 @@ export default function CheckoutForm() {
   const elements = useElements();
   const currentOrder = useSelector(selectCurrentOrder);
 
-  console.log(currentOrder);
+  // console.log(currentOrder);
 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,8 +62,8 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `http://localhost:3000/order-success/${currentOrder.id}`,
-      },// after payment successfull redirect to this url ...
+        return_url: `https://mern-ecommerce-rho-eight.vercel.app/order-success/${currentOrder.id}`,
+      },     // after payment successfull redirect to this url ...
     });
 
     // This point will only be reached if there is an immediate error when

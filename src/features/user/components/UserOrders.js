@@ -6,8 +6,8 @@ import {
   selectUserInfoStatus,
 } from "../userSlice";
 import { discountedPrice } from "../../../app/constants";
-import { Grid } from "react-loader-spinner";
 import { updateOrderAsync } from "../../order/orderSlice";
+import { Grid } from "react-loader-spinner";
 
 export default function UserOrders() {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export default function UserOrders() {
   const status = useSelector(selectUserInfoStatus);
   const [removeOrderId, setRemoveOrderId] = useState(null);
 
-  console.log(orders);
+  // console.log(orders);
 
   const handleRemove = (e, order) => {
     console.log("Remove button called");
@@ -26,7 +26,7 @@ export default function UserOrders() {
     dispatch(updateOrderAsync(updatedOrder))
       .then(() => setRemoveOrderId(order.id))
       .catch((err) => {
-        console.error("Error updating order:", err.message);
+        console.error("Error updating order:--> ", err.message);
       });
   };
 
@@ -51,8 +51,7 @@ export default function UserOrders() {
       <div>
         {orders &&
           orders.map((order) => {
-            console.log(order);
-
+            // console.log(order);
             return (
               <div key={order.id}>
                 <div>
@@ -77,7 +76,7 @@ export default function UserOrders() {
                       <div className="flow-root">
                         <ul className="-my-6 divide-y divide-gray-200">
                           {order?.items?.map((item) => {
-                            console.log(item);
+                            // console.log(item);
                             return (
                               <li key={item.id} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">

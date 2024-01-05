@@ -23,17 +23,16 @@ export const fetchLoggedInUserAsync = createAsyncThunk(
   "user/fetchLoggedInUser",
   async () => {
     const response = await fetchLoggedInUser();
-    console.log(response.data);
-    return response.data; // ye tabhi return hoga jab promise fulfilled ho jayega.
+    // console.log(response.data);
+    return response.data; 
   }
 );
 
 export const updateUserAsync = createAsyncThunk(
   "user/updateUser",
   async (update) => {
-    console.log(update);
     const response = await updateUser(update);
-    console.log(response.data);
+    // console.log(response.data);
     return response.data; // ye tabhi return hoga jab promise fulfilled ho jayega.
   }
 );

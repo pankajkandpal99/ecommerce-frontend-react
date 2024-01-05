@@ -16,7 +16,6 @@ import { discountedPrice } from "../app/constants";
 
 export default function Checkout() {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -37,7 +36,7 @@ export default function Checkout() {
   const totalAmount = items.reduce(
     (amount, item) => amount + discountedPrice(item.product) * item.quantity,
     0
-  ); // accumulator: Accumulator variable jo ki yaha per amount hai, ye har iteration mein update hota hai... currentValue: Current element of the array jo ki yaha per item hai.
+  ); // accumulator: har iteration mein update hota hai... currentValue: Current element of the array jo ki item hai.
 
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);
 
@@ -52,8 +51,8 @@ export default function Checkout() {
   };
 
   const handleAddress = (event) => {
-    // console.log(event.target.value);  // isme hame jis address per bhi click karenge hame uska index milega kyuki humne iski value me index diya hua hai iske input field me kyuki ye ek radio type input field hai to iski value me humne iska index diya hua hai.
-    setSelectedAddress(user.addresses[event.target.value]); // jis stored address per hum click karenge uske index ki value select ho jayegi aur use setSelectedAddresses me set kar diya jayega.
+    // console.log(event.target.value);  
+    setSelectedAddress(user.addresses[event.target.value]); 
   };
 
   const handlePayment = (event) => {
@@ -72,7 +71,7 @@ export default function Checkout() {
         selectedAddress,
         status: "pending", // other status can be delivered, received. // status dene ka reason ye hai ki ise admin order ko track karke use change kar sakta hai.
       };
-      console.log(order);
+      // console.log(order);
       dispatch(createOrderAsync(order));
     } else {
       // TODO: we can use proper messaging popup here.
@@ -309,7 +308,7 @@ export default function Checkout() {
 
               <ul>
                 {user?.addresses?.map((address, index) => {
-                  console.log(user);
+                  // console.log(user);
                   return (
                     <li
                       key={index}
@@ -406,7 +405,7 @@ export default function Checkout() {
                 <div className="flow-root">
                   <ul role="list" className="-my-6 divide-y divide-gray-200">
                     {items.map((item) => {
-                      console.log(item);
+                      // console.log(item);
                       return (
                         <li key={item.id} className="flex py-6">
                           <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">

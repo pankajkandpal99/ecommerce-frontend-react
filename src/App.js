@@ -135,7 +135,7 @@ const router = createBrowserRouter([
     // we will add page later right now using component directly.
   },
   {
-    path: "/orders",
+    path: "/my-orders",
     element: (
       <Protected>
         <UserOrderPage></UserOrderPage>
@@ -171,7 +171,7 @@ function App() {
   const user = useSelector(selectLoggedInUser);
   const userChecked = useSelector(selectUserChecked);
 
-  // console.log(user);  // isme server se token aayega jo ki server side per check hoga, fir client ko next page per bheja jayega.
+  // console.log(user);
   console.log(userChecked);
 
   useEffect(() => {
@@ -179,9 +179,7 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
-    // jaise hi user login karta hai waise hi uss user ke cart me added items ko show karna hai ..
     if (user) {
-      // we can get req.user by token on backend so no need to give in front-end
       dispatch(fetchItemsByUserIdAsync());
       dispatch(fetchLoggedInUserAsync());
     }
@@ -189,9 +187,11 @@ function App() {
 
   return (
     <div className="App">
-      <Provider template={AlertTemplate} {...options}>
-        {userChecked && <RouterProvider router={router} />}
-      </Provider>
+      {userChecked && (
+        <Provider template={AlertTemplate} {...options}>
+          <RouterProvider router={router} />
+        </Provider>
+      )}
       {/* Link must be inside the Provider. */}
     </div>
   );

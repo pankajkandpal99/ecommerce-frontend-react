@@ -25,8 +25,7 @@ const AdminOrders = () => {
   const [isSelectBoxVisible, setIsSelectBoxVisible] = useState(false);
 
   const handleEdit = (order) => {
-    console.log("clicked pencilIcon");
-    console.log(editableOrderId);
+    // console.log("clicked pencilIcon");
     setIsSelectBoxVisible((prevVisibility) => {
       const newVisibility = !prevVisibility; // Toggle the visibility
       setEditableOrderId(newVisibility ? order.id : -1); // Set editableOrderId based on visibility
@@ -38,8 +37,16 @@ const AdminOrders = () => {
     console.log("handleShow");
   };
 
-  const handleUpdate = (event, order) => {
+  const handleOrderStatus = (event, order) => {
     const updatedOrder = { ...order, status: event.target.value };
+    console.log(updatedOrder);
+    dispatch(updateOrderAsync(updatedOrder));
+    setIsSelectBoxVisible(false);
+    setEditableOrderId(-1);
+  };
+
+  const handleOrderPaymentStatus = (event, order) => {
+    const updatedOrder = { ...order, paymentStatus: event.target.value };
     console.log(updatedOrder);
     dispatch(updateOrderAsync(updatedOrder));
     setIsSelectBoxVisible(false);
@@ -51,7 +58,6 @@ const AdminOrders = () => {
   };
 
   const handleSort = (sortOption) => {
-    // ye function ko hum kisi ke basis per bhi sort kar sakte hain. jaise ki id ke basis per sort krne ke liye 'ORDER' per click karna padega jo ki table ke thead ka pehla th hai. aur totalAmount ke basis per bhi sort kar sakte hain jab hum TOTALAMOUNT per click akrte hain.
     const sort = { _sort: sortOption.sort, _order: sortOption.order };
     // console.log({ sort });
     setSort(sort);
@@ -70,6 +76,8 @@ const AdminOrders = () => {
       case "dispatched":
         return "bg-yellow-200 text-yellow-600";
       case "delivered":
+        return "bg-green-200 text-green-600";
+      case "received":
         return "bg-green-200 text-green-600";
       case "cancelled":
         return "bg-red-200 text-red-600";
@@ -123,13 +131,15 @@ const AdminOrders = () => {
                         ))}
                     </th>
                     <th className="py-3 px-6 text-center">Shipping Address</th>
-                    <th className="py-3 px-6 text-center">Status</th>
+                    <th className="py-3 px-6 text-center">Order Status</th>
+                    <th className="py-3 px-6 text-center">Payment Method</th>
+                    <th className="py-3 px-6 text-center">Payment Status</th>
                     <th className="py-3 px-6 text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="text-gray-600 text-sm font-medium bg-white">
                   {orders?.map((order) => {
-                    console.log(order);
+                    // console.log(order);
                     return (
                       <tr className="border-b border-gray-200 hover:bg-gray-100">
                         <td className="py-3 px-6 text-left whitespace-nowrap">
@@ -140,7 +150,7 @@ const AdminOrders = () => {
                         </td>
                         <td className="py-3 px-6 text-left">
                           {order.items.map((item) => {
-                            console.log(item);
+                            // console.log(item);
                             return (
                               <div className="flex items-center">
                                 <div className="mr-2">
@@ -175,12 +185,13 @@ const AdminOrders = () => {
                             <div>{order.selectedAddress.phone}, </div>
                           </div>
                         </td>
+
                         <td className="py-3 px-6 text-center">
                           {isSelectBoxVisible &&
                           order.id === editableOrderId ? (
                             <select
                               value={order.status}
-                              onChange={(e) => handleUpdate(e, order)}
+                              onChange={(e) => handleOrderStatus(e, order)}
                             >
                               <option value="pending">Pending</option>
                               <option value="dispatched">Dispatched</option>
@@ -197,6 +208,36 @@ const AdminOrders = () => {
                             </span>
                           )}
                         </td>
+
+                        <td className="py-3 px-6 text-center">
+                          <div className="flex items-center justify-center">
+                            {order.paymentMethod}
+                          </div>
+                        </td>
+
+                        <td className="py-3 px-6 text-center">
+                          {isSelectBoxVisible &&
+                          order.id === editableOrderId ? (
+                            <select
+                              value={order.paymentStatus}
+                              onChange={(e) =>
+                                handleOrderPaymentStatus(e, order)
+                              }
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="received">Received</option>
+                            </select>
+                          ) : (
+                            <span
+                              className={`${chooseColor(
+                                order.paymentStatus
+                              )} py-1 px-3 rounded-full text-xs`}
+                            >
+                              {order.paymentStatus}
+                            </span>
+                          )}
+                        </td>
+
                         <td className="py-3 px-6 text-center">
                           <div className="flex item-center justify-center">
                             <div className="w-6 mr-5 transform hover:text-purple-500 hover:scale-120">
@@ -233,5 +274,3 @@ const AdminOrders = () => {
 };
 
 export default AdminOrders;
-
-// 7:11:00
