@@ -1,11 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { loginUser, createUser, signOut, checkAuth } from "./authAPI";
+import {
+  loginUser,
+  createUser,
+  signOut,
+  checkAuth,
+  resetPasswordRequest,
+  resetPassword,
+} from "./authAPI";
 
 const initialState = {
   loggedInUserToken: null, // this should only contain user identity => 'id', 'email', 'role'... user se related loggedInUser me nahi rahengi...
   status: "idle",
   error: null,
   userChecked: false,
+  mailSent: false,
+  passwordReset: false,
 };
 
 // Thunk middleware ko use karke, aap async actions ko dispatch kar sakte hain, jaise ki API calls, aur phir jab tak response nahi milta, tab tak reducers ko update nahi karta hai.
@@ -27,6 +36,32 @@ export const loginUserAsync = createAsyncThunk(
     } catch (error) {
       console.log(error);
       return rejectWithValue(error);
+    }
+  }
+);
+
+export const resetPasswordRequestAsync = createAsyncThunk(
+  "user/resetPasswordRequest",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await resetPasswordRequest(email);
+      return response.data;
+    } catch (err) {
+      console.log(err.message);
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const resetPasswordAsync = createAsyncThunk(
+  "user/resetPassword",
+  async (password, { rejectWithValue }) => {
+    try {
+      const response = await resetPassword(password);
+      return response.data;
+    } catch (err) {
+      console.log(err.message);
+      return rejectWithValue(err);
     }
   }
 );
@@ -95,12 +130,36 @@ export const authSlice = createSlice({
       .addCase(checkAuthAsync.rejected, (state, action) => {
         state.status = "idle";
         state.userChecked = true;
+      })
+      .addCase(resetPasswordRequestAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(resetPasswordRequestAsync.fulfilled, (state) => {
+        state.status = "idle";
+        state.mailSent = true;
+      })
+      .addCase(resetPasswordRequestAsync.rejected, (state, action) => {
+        state.status = "idle";
+        state.error = action.payload;
+      })
+      .addCase(resetPasswordAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(resetPasswordAsync.fulfilled, (state) => {
+        state.status = "idle";
+        state.passwordReset = true;
+      })
+      .addCase(resetPasswordAsync.rejected, (state, action) => {
+        state.status = "idle";
+        state.error = action.payload;
       });
   },
 });
 
-export const selectLoggedInUser = (state) => state.auth.loggedInUserToken; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho.. isme state.auth.loggedInUser me auth isliye aaya hai kyuki ye reducer ka naam hai.
-export const selectError = (state) => state.auth.error; // ye selector hai jo hum waha use karte hain jaha hume iski state ko access karna ho..
+export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
+export const selectError = (state) => state.auth.error;
 export const selectUserChecked = (state) => state.auth.userChecked;
+export const selectMailSent = (state) => state.auth.mailSent;
+export const selectPasswordReset = (state) => state.auth.passwordReset;
 
 export default authSlice.reducer;

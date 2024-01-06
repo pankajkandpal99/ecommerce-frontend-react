@@ -39,9 +39,9 @@ export default function Signup() {
                   addresses: [],
                   role: "user",
                   // TODO: This role can be directly given on backend..
-                }) // ye data jo iske andar parameters me hai wo data.json me jake save ho jayega.
+                }) 
               );
-              console.log(data);
+              // console.log(data);
             })}
           >
             <div>
@@ -57,7 +57,7 @@ export default function Signup() {
                   {...register("email", {
                     required: "email is required",
                     pattern: {
-                      value: /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi,
+                      value: /\b[\w.-]+@[\w.-]+\.\w{2,4}\b/gi,
                       message: "email not valid",
                     },
                   })} // The register method is part of the react-hook-form library, which is a popular library for managing form state and validation in React applications. register function form state ko manage karta hai, input field ke value aur validation status ko track karta hai. Spread operator se, jo bhi chizein register function wapas karta hai, wo <input> ke sath jud jaati hain, jisse wo form ke saath sahi se integrate ho sake. Spread operator ka use wahi properties ko <input> element ke andar "spread" karne ke liye kiya jata hai. Matlab, jo bhi properties register function se aayi hain, wo <input> ke andar fit ho jayein.

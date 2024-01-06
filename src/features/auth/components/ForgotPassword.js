@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
+import { resetPasswordRequestAsync, selectMailSent } from "../authSlice";
 
 function ForgotPassword() {
+  const dispatch = useDispatch();
+  const mailSent = useSelector(selectMailSent);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(); // useForm hook ek React hook hai jo react-hook-form library ke hisaab se banaya gaya hai. Iska use form handling ke liye hota hai, jisse aap apne React forms ko easily manage kar sakte hain.
-  console.log(errors);
+  } = useForm();
 
   return (
     <>
@@ -28,8 +32,8 @@ function ForgotPassword() {
             className="space-y-6"
             noValidate
             onSubmit={handleSubmit((data) => {
-              console.log(data);
-              // TODO: implementation on backend with email.
+              // console.log(data);
+              dispatch(resetPasswordRequestAsync(data.email));   // This is for sent mail, jisse user ko mail jayega aur fir wo ResetPasswordPage per redirect hoga.. fir waha se naya password input karke wo database me purane password ko replace kar dega...
             })}
           >
             <div>
@@ -42,11 +46,10 @@ function ForgotPassword() {
               <div className="mt-2">
                 <input
                   id="email"
-                  name="email"
                   {...register("email", {
                     required: "email is required",
                     pattern: {
-                      value: /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi,
+                      value: /\b[\w.-]+@[\w.-]+\.\w{2,4}\b/gi,
                       message: "email not valid",
                     },
                   })}
@@ -56,6 +59,8 @@ function ForgotPassword() {
                 {errors.email && (
                   <p className="text-red-500">{errors.email.message}</p>
                 )}
+
+                {mailSent && <p className="text-green-500">Mail Sent</p>}
               </div>
             </div>
 

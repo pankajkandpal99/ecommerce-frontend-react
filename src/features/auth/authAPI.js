@@ -59,9 +59,61 @@ export function checkAuth() {
 }
 
 export function signOut() {
-  console.log();
+  // console.log('user signout called');
   return new Promise(async (resolve) => {
     // TODO: on server we will remove user session info.
     resolve({ data: "success" });
+  });
+}
+
+// this is for mail sent api.. jisse server ki taraf se user ko mail jayega.. aur user ki taraf se server ko yaha se request jayegi..
+export function resetPasswordRequest(email) {
+  // console.log(email);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch("/auth/reset-password-request", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: { "content-type": "application/json" },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // console.log(data);
+        resolve({ data });
+      } else {
+        console.log("Response is not ok.");
+        const error = await response.text;
+        reject(error);
+      }
+    } catch (err) {
+      console.log("Error occur in forgot-password: ", err.message);
+      reject(err);
+    }
+  });
+}
+
+// this is for change password api... ye user ka naya password leke server ko jayega aur server fir use database me jakar replace kar dega purane password se..
+export function resetPassword(data) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(`/auth/reset-password`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "content-type": "application/json" },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        resolve(data);
+      } else {
+        const error = await response.text;
+        reject(error);
+      }
+    } catch (err) {
+      console.log("Error occur in change your password: ", err.message);
+      reject(err);
+    }
   });
 }
