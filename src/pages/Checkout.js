@@ -71,7 +71,7 @@ export default function Checkout() {
         selectedAddress,
         status: "pending", // other status can be delivered, received. // status dene ka reason ye hai ki ise admin order ko track karke use change kar sakta hai.
       };
-      // console.log(order);
+      console.log(order);
       dispatch(createOrderAsync(order));
     } else {
       // TODO: we can use proper messaging popup here.

@@ -134,6 +134,42 @@ const AdminOrders = () => {
                     <th className="py-3 px-6 text-center">Order Status</th>
                     <th className="py-3 px-6 text-center">Payment Method</th>
                     <th className="py-3 px-6 text-center">Payment Status</th>
+                    <th
+                      className="py-3 px-6 text-center cursor-pointer"
+                      onClick={(e) =>
+                        handleSort({
+                          sort: "createdAt",
+                          order: sort?._order === "asc" ? "desc" : "asc",
+                        })
+                      }
+                    >
+                      Order Time{" "}
+                      {sort._sort === "createdAt" &&
+                        (sort._order === "asc" ? (
+                          <ArrowUpIcon className="w-4 h-4 inline" />
+                        ) : (
+                          <ArrowDownIcon className="w-4 h-4 inline" />
+                        ))}
+                    </th>
+
+                    <th
+                      className="py-3 px-6 text-center cursor-pointer"
+                      onClick={(e) =>
+                        handleSort({
+                          sort: "updatedAt",
+                          order: sort?._order === "asc" ? "desc" : "asc",
+                        })
+                      }
+                    >
+                      Last Updated{" "}
+                      {sort._sort === "updatedAt" &&
+                        (sort._order === "asc" ? (
+                          <ArrowUpIcon className="w-4 h-4 inline" />
+                        ) : (
+                          <ArrowDownIcon className="w-4 h-4 inline" />
+                        ))}
+                    </th>
+
                     <th className="py-3 px-6 text-center">Actions</th>
                   </tr>
                 </thead>
@@ -236,6 +272,22 @@ const AdminOrders = () => {
                               {order.paymentStatus}
                             </span>
                           )}
+                        </td>
+
+                        <td className="py-3 px-6 text-center">
+                          <div className="flex items-center justify-center">
+                            {order.createdAt
+                              ? new Date(order.createdAt).toLocaleString()
+                              : null}
+                          </div>
+                        </td>
+
+                        <td className="py-3 px-6 text-center">
+                          <div className="flex items-center justify-center">
+                            {order.updatedAt
+                              ? new Date(order.updatedAt).toLocaleString()
+                              : null}
+                          </div>
                         </td>
 
                         <td className="py-3 px-6 text-center">

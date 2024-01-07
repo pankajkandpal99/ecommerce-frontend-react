@@ -14,20 +14,23 @@ export default function StripeCheckout() {
   const [clientSecret, setClientSecret] = useState("");
   const currentOrder = useSelector(selectCurrentOrder);
 
-  console.log(currentOrder?.totalAmount);
+  console.log(currentOrder);
 
   useEffect(() => {
     // create PaymentIntent as soon as the page loads
-    fetch("/create-payment-intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        totalAmount: currentOrder.totalAmount,
-        orderId: currentOrder.id,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
+    if (currentOrder && currentOrder.totalAmount && currentOrder.id ) {
+      console.log('request coming')
+      fetch("/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          totalAmount: currentOrder.totalAmount,
+          orderId: currentOrder.id,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => setClientSecret(data.clientSecret));
+    }
   }, []);
 
   const appearance = {

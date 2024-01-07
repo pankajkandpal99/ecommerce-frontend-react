@@ -29,20 +29,52 @@ const AdminProductForm = () => {
     formState: { errors },
   } = useForm();
 
-  // console.log(selectedProduct);
+  console.log(selectedProduct);
+
+  const colors = [
+    {
+      name: "White",
+      class: "bg-white",
+      selectedClass: "ring-gray-400",
+      id: "white",
+    },
+    {
+      name: "Gray",
+      class: "bg-gray-200",
+      selectedClass: "ring-gray-400",
+      id: "gray",
+    },
+    {
+      name: "Black",
+      class: "bg-gray-900",
+      selectedClass: "ring-gray-900",
+      id: "black",
+    },
+  ];
+
+  const sizes = [
+    { name: "XXS", inStock: true, id: "xxs" },
+    { name: "XS", inStock: true, id: "xs" },
+    { name: "S", inStock: true, id: "s" },
+    { name: "M", inStock: true, id: "m" },
+    { name: "L", inStock: true, id: "l" },
+    { name: "XL", inStock: true, id: "xl" },
+    { name: "2XL", inStock: true, id: "2xl" },
+    { name: "3XL", inStock: true, id: "3xl" },
+  ];
 
   const handleDelete = () => {
     const product = { ...selectedProduct };
-    product.deleted = true; // setting a "deleted" flag to true instead of physically removing the record from the database, is often referred to as "soft delete." Soft delete is a common approach to handle deletions in databases, especially in situations where you want to retain a historical record of deleted items or where you want to provide the ability to recover deleted items. When you perform a soft delete, the record is not permanently removed from the database; instead, a flag, such as "deleted," is updated to indicate that the item has been logically deleted. This can be useful for auditing purposes, historical tracking, or to provide users with the ability to recover deleted items.
+    product.deleted = true; // setting a "deleted" flag to true instead of physically removing the record from the database, is often referred to as "soft delete."
     // console.log(product);
     dispatch(updateProductAsync(product));
   };
 
   useEffect(() => {
     if (params.id) {
-      dispatch(fetchProductByIdAsync(params.id)); // ise isliye dispatch kiya ja ra hai kyuki ek product ki bahut sari detail ho sakti hai jo ki main page per nahi jati to aise cases me trust nahi kiya ja sakta. to jab admin ke liye product-detail wala page load hoga waise hi redux me selectedProduct me data fill ho jayega jo ki database se get hokar aayega. ho sakta hai ki product hamare paas loaded ho redux me lekin ek product ki bahut detail ho sakti hai jo main page nahi aa sakti.
+      dispatch(fetchProductByIdAsync(params.id));
     } else {
-      // dispatch(clearSelectedProduct()); // jab hum Add Product button per click krte hain tabhi selectedProduct null rahega kyuki humne kisi product per click kiya hi nahi hai. agar click nahi kiya to params me id jayegi nahi, aur agar id nahi jayegi to selectedProduct ki detail nahi aayegi.
+      // dispatch(clearSelectedProduct());
     }
   }, [dispatch, params.id]);
 
@@ -59,14 +91,27 @@ const AdminProductForm = () => {
       setValue("image1", selectedProduct.images[0]);
       setValue("image2", selectedProduct.images[1]);
       setValue("image3", selectedProduct.images[2]);
+      setValue(
+        "sizes",
+        selectedProduct.sizes.map((size) => size.id)
+      );
+      setValue(
+        "colors",
+        selectedProduct.colors.map((color) => color.id)
+      );
+      setValue("highlight1", selectedProduct.highlights[0]);
+      setValue("highlight2", selectedProduct.highlights[1]);
+      setValue("highlight3", selectedProduct.highlights[2]);
+      setValue("highlight4", selectedProduct.highlights[3]);
     }
-  }, [selectedProduct, setValue]); // jaise hi Delete button per click kiya jata hai jo ki iss form ke last me available hai to usme delete flag true set hote hi ye useEffect chalega aur iss page me se Delete button hata dega aur "This product is deleted" wali line add kar dega.
+  }, [selectedProduct, setValue]);
+
   return (
     <>
       <form
         noValidate
         onSubmit={handleSubmit((data) => {
-          console.log(data);
+          // console.log(data);
           const product = { ...data };
           product.images = [
             product.image1,
@@ -75,6 +120,18 @@ const AdminProductForm = () => {
             product.thumbnail,
           ];
           product.rating = 0;
+          product.highlights = [
+            product.highlight1,
+            product.highlight2,
+            product.highlight3,
+            product.highlight4,
+          ];
+          product.colors = product.colors = product.colors.map((color) =>
+            colors.find((clr) => clr.id === color)
+          );
+          product.sizes = product.sizes.map((size) =>
+            sizes.find((sz) => sz.id === size)
+          );
           delete product["image1"];
           delete product["image2"];
           delete product["image3"];
@@ -83,7 +140,7 @@ const AdminProductForm = () => {
           product.stock = +product.stock;
           product.discountPercentage = +product.discountPercentage;
 
-          console.log(product);
+          // console.log(product);
 
           if (params.id) {
             product.id = params.id;
@@ -179,6 +236,53 @@ const AdminProductForm = () => {
                 </div>
               </div>
 
+              {/* colors */}
+              <div className="col-span-full">
+                <label
+                  htmlFor="colors"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Colors
+                </label>
+                <div className="mt-2">
+                  {colors?.map((color) => (
+                    <>
+                      <input
+                        key={color.id}
+                        type="checkbox"
+                        {...register("colors", {})}
+                        value={color.id}
+                      />{" "}
+                      {color.name}{" "}
+                    </>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sizes */}
+              <div className="col-span-full">
+                <label
+                  htmlFor="sizes"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Sizes
+                </label>
+                <div className="mt-2">
+                  {sizes?.map((size) => (
+                    <>
+                      <input
+                        key={size.id}
+                        type="checkbox"
+                        {...register("sizes", {})}
+                        value={size.id}
+                      />{" "}
+                      {size.name}{" "}
+                    </>
+                  ))}
+                </div>
+              </div>
+
+              {/* Category */}
               <div className="col-span-full">
                 <label
                   htmlFor="category"
@@ -202,6 +306,7 @@ const AdminProductForm = () => {
                 </div>
               </div>
 
+              {/* Price */}
               <div className="sm:col-span-2">
                 <label
                   htmlFor="price"
@@ -225,6 +330,7 @@ const AdminProductForm = () => {
                 </div>
               </div>
 
+              {/* Discount Percentage */}
               <div className="sm:col-span-2">
                 <label
                   htmlFor="discountPercentage"
@@ -248,6 +354,7 @@ const AdminProductForm = () => {
                 </div>
               </div>
 
+              {/* stock */}
               <div className="sm:col-span-2">
                 <label
                   htmlFor="stock"
@@ -270,6 +377,7 @@ const AdminProductForm = () => {
                 </div>
               </div>
 
+              {/* Thumbnail */}
               <div className="sm:col-span-6">
                 <label
                   htmlFor="thumbnail"
@@ -291,6 +399,7 @@ const AdminProductForm = () => {
                 </div>
               </div>
 
+              {/* Images */}
               <div className="sm:col-span-6">
                 <label
                   htmlFor="image1"
@@ -311,6 +420,7 @@ const AdminProductForm = () => {
                   </div>
                 </div>
               </div>
+
               <div className="sm:col-span-6">
                 <label
                   htmlFor="image2"
@@ -347,6 +457,91 @@ const AdminProductForm = () => {
                         required: "image-url is required",
                       })}
                       id="image3"
+                      className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Highlights */}
+              <div className="sm:col-span-6">
+                <label
+                  htmlFor="highlight1"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Highlight 1
+                </label>
+                <div className="mt-2">
+                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+                    <input
+                      type="text"
+                      {...register("highlight1", {
+                        required: "image-url is required",
+                      })}
+                      id="highlight1"
+                      className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="sm:col-span-6">
+                <label
+                  htmlFor="highlight2"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Highlight 2
+                </label>
+                <div className="mt-2">
+                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+                    <input
+                      type="text"
+                      {...register("highlight2", {
+                        required: "image-url is required",
+                      })}
+                      id="highlight2"
+                      className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="sm:col-span-6">
+                <label
+                  htmlFor="highlight3"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Highlight 3
+                </label>
+                <div className="mt-2">
+                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+                    <input
+                      type="text"
+                      {...register("highlight3", {
+                        required: "image-url is required",
+                      })}
+                      id="highlight3"
+                      className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="sm:col-span-6">
+                <label
+                  htmlFor="highlight4"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Highlight 4
+                </label>
+                <div className="mt-2">
+                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+                    <input
+                      type="text"
+                      {...register("highlight4", {
+                        required: "image-url is required",
+                      })}
+                      id="highlight4"
                       className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     />
                   </div>

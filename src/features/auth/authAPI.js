@@ -38,6 +38,7 @@ export function loginUser(loginInfo) {
   });
 }
 
+// This is only fr checking--> is user session available or not?
 export function checkAuth() {
   // console.log("request comes");
   return new Promise(async (resolve, reject) => {
@@ -59,10 +60,20 @@ export function checkAuth() {
 }
 
 export function signOut() {
-  // console.log('user signout called');
-  return new Promise(async (resolve) => {
-    // TODO: on server we will remove user session info.
-    resolve({ data: "success" });
+  return new Promise(async (resolve, reject) => {
+    // on server we will remove user session info.
+    try {
+      const response = await fetch(`/auth/logout`);
+      if (response.ok) {
+        resolve({ data: 'success' });
+      } else {
+        const error = await response.text;
+        reject(error);
+      }
+    } catch (error) {
+      console.log("Error occur in signout req : ", error.message);
+      reject(error);
+    }
   });
 }
 
@@ -105,7 +116,7 @@ export function resetPassword(data) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         resolve(data);
       } else {
         const error = await response.text;

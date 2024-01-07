@@ -65,7 +65,7 @@ export default function AdminProductDetail() {
         <div className="pt-6">
           <nav aria-label="Breadcrumb">
             <ol
-              role="list"
+              // role="list"
               className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
             >
               {/* if product.breadcrumbs is present then this loop will be execute. */}
@@ -152,10 +152,10 @@ export default function AdminProductDetail() {
             <div className="mt-4 lg:row-span-3 lg:mt-0">
               <h2 className="sr-only">Product information</h2>
               <p className="text-xl line-through tracking-tight text-gray-900">
-                {product.price}
+                ${product.price}
               </p>
               <p className="text-3xl tracking-tight text-gray-900">
-                {discountedPrice(product)}
+                ${discountedPrice(product)}
               </p>
 
               {/* Reviews */}
