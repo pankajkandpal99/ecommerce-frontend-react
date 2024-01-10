@@ -16,10 +16,10 @@ MERN E-Commerce (in Hindi) with Admin Panel, Redux Toolkit, Stripe Payment, Clou
 🔥 Technical Details :
 - React 18 with Tailwind CSS
 - Redux Toolkit with Async Thunk
-- React Router v6
+- React Router v6.2
 - JSON-server for front-end testing
 - MongoDB for Database
-- Mongoose v7 as ODM
+- Mongoose v8 as ODM
 - REST API using Express
 - Authentication using Passport JS
 - API Authentication using Passport JWT
