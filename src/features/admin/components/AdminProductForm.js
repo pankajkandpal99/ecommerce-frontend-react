@@ -152,7 +152,6 @@ const AdminProductForm = () => {
           } else {
             dispatch(createProductAsync(product));
             alert.success("Product Successfully Created.");
-            // TODO: these alerts should check if API failed
             reset();
           }
         })}

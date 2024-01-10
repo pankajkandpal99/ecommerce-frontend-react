@@ -11,7 +11,7 @@ import {
   selectProductListStatus,
   selectTotalItems,
 } from "../ProductSlice";
-import { ITEMS_PER_PAGE, discountedPrice } from "../../../app/constants";
+import { ITEMS_PER_PAGE } from "../../../app/constants";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react"; // Dialog, Disclosure, aur Menu components, aapke UI mein modal dialogs, collapsible sections, aur dropdown menus banane mein madad karte hain. Ye components aksar accessibility guidelines ko bhi follow karte hain, jisse aapke UI ko users ke liye accessible banane mein help hoti hai. Jab aap kisi UI element ko show ya hide karte hain aur aap usme smooth transition chahte hain, tab aap Transition component ka istemal kar sakte hain. Iske through, aap element ke state changes ko handle kar sakte hain, jaise ki jab aap ek dropdown open ya close karte hain.
 import { StarIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
@@ -26,8 +26,18 @@ import { Grid } from "react-loader-spinner";
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
-  { name: "Price: Low to High", sort: "price", order: "asc", current: false },
-  { name: "Price: High to Low", sort: "price", order: "desc", current: false },
+  {
+    name: "Price: Low to High",
+    sort: "discountPrice",
+    order: "asc",
+    current: false,
+  },
+  {
+    name: "Price: High to Low",
+    sort: "discountPrice",
+    order: "desc",
+    current: false,
+  },
 ];
 
 function classNames(...classes) {
@@ -35,7 +45,6 @@ function classNames(...classes) {
 }
 
 export default function ProductList() {
-  // iss component to HomePage ke andar '/' route per call kiya ja ra hai ...
   const dispatch = useDispatch();
   const products = useSelector(selectAllProducts);
   const status = useSelector(selectProductListStatus);
@@ -45,7 +54,7 @@ export default function ProductList() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
-  const [page, setPage] = useState(1); // page ki starting value 1 se start hogi.
+  const [page, setPage] = useState(1);
 
   // console.log(products);
 
@@ -64,24 +73,19 @@ export default function ProductList() {
   ];
 
   const handleFilter = (event, section, option) => {
-    // console.log(event.target.checked);     // ye filter karte time checked/unchecked karne ke liye hai ...
+    // console.log(event.target.checked);
     let newFilter = { ...filter };
-    // TODO : on server it will support multiple categories..
     if (event.target.checked) {
-      // iske andar ka code tab execute hoga jab user checkbox per check karega...
       if (newFilter[section.id]) {
-        // ye condition check karti hai ki kon se section per use dwara click kiya gaya hai. agar user wo section per click karta hai jis per wo ek baar click kar chuka hai to if ke andar ka code execute hoga aur uske existing newFilter object me option ki value ko update karega... section ka matlab hai ki 'Category aur Brands'... aur Option wo object hai jiske andar Category aur Brands ki details hain. option upper filter array me already defined hain..
-        newFilter[section.id].push(option.value); // Suppose aapne pehle "Category" mein "smartphones" ko select kiya, to newFilter aise dikhega: newFilter = { newFilter =  category: ["smartphones"]} .... Phir aapne "Brands" mein "Apple" aur "Samsung" ko select kiya, to newFilter update hoga: {category: ["smartphones"], brand: ["Apple", "Samsung"]}. Is tarah se, newFilter multiple checkboxes ke values ko track karega aur aapko saare selected filters ka ek snapshot provide karega.
+        newFilter[section.id].push(option.value);
       } else {
-        // agar user pehle brand per click karta hai aur fir category wale section per click karta hai to iska matlab hai ki newFiler jo ki existing section aur uski values ko object me store karta hai(section.id ke sath) uske andar 'section.id' nahi hai... agr aisa hai to else ke andar ka code execute hoga aur jisme wo newFilter object ke andar user dwara select ki gayi section ki id ko store karega aur uske saath uski value ko bhi array ke andar put karega...
         newFilter[section.id] = [option.value];
       }
     } else {
-      // check karne ke baad uncheck karne per ye code execute hoga...
       const index = newFilter[section.id].findIndex(
         (el) => el === option.value
-      ); // ye index find karne ka kaam newFilter object ke andar hoga jisme ki section ki id metioned hain jaise ki category aur Brands... fir usme existing array me wo find karega ki uss existing array me aisa kon sa index hai jiski value option ki value se match hoti hai ... fir index milne use index naam ke variable me stre kar diya jayega aur fir iske neeche wali line execute ho jayegi jo ki uss array me existing index jiski value option ki value se match karti hogi usko delete kar diya jayega splice method se... isme existing element ko jo ki newFilter oject ke andar section.id ke array me available hai use option.value se isliye compare kiya gaya hai kuki wo checkbox jisper hum click aur unclick karenge wo aur label dono ek hi div me hain, aur uss div ki id option.value di gayi hai....
-      newFilter[section.id].splice(index, 1); // for delete the unchecked category(I've only 2 sections -> category and Brands)... i mean ki kisi category ko checked karne ke baad unchecked karne per use delete kar diya jayega...
+      );
+      newFilter[section.id].splice(index, 1);
     }
 
     console.log({ newFilter });
@@ -89,33 +93,30 @@ export default function ProductList() {
   };
 
   const handleSort = (event, option) => {
-    // Selected sorting option ke basis pe sort object neeche banaya jaa raha hai
-    const sort = { _sort: option.sort, _order: option.order }; // dummy.json file ka ye method hai ki usme sort karne ke liye '?_sort:value' di jati hai... isme sort object ke andar jab hum sort karte hain sort and order ke basis per to key ke aage underscore diya hua hai jo ki compulsary hai kyuki hum avi json-server se data leke aa re hain jo ki ye strictly mention karta hai ki key ke aage se underscore hona hi chiye sorting ke time.... agar hum underscore nahi lagate hain to data fetch nahi ho payega server se...
+    const sort = { _sort: option.sort, _order: option.order };
     console.log({ sort });
-    setSort(sort); // Sort state ko banaye gaye sort object ke saath set kiya ja raha hai
+    setSort(sort);
   };
 
   const handlePage = (page) => {
     // page = index + 1....
-    // console.log(page);                             // isme uss page ka index number se 1 jyada number aa jayega kyuki index 0 se start hota hai aur page 1 se start hota hai jisper hum click kar rahe hain..
+    // console.log(page);
     setPage(page);
   };
 
   useEffect(() => {
-    // console.log(products);
-    const pagination = { _page: page, _limit: ITEMS_PER_PAGE }; // kyuki page koi object nahi hai to hum use direct dispatch nahi kr sakte hain, isliye humne use pagination object me dalkar set kiya hai jo json-server ka route handler use detect karega aur uske basis per hame page ke hisab se products ki list lakar de dega..
-    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination })); //Redux me useDispatch hook ka use Redux store ki state ko update karne ke liye hota hai. dispatch ka seedha sa mtlb hota hai action ko bhejna jo ki redux ki state ko update karta hai.. aur redux ki state ko access karne ke liye useSelector hook use kiya jata hai jo ki redux ki state ki information hame lake deta hai..
-    //  TODO: Server will filter deletd products
-  }, [dispatch, filter, sort, page]); // Jab aap dispatch ko useEffect ke dependency array mein daalte hain, to iska matlab hai ki agar Redux store ki state mein koi bhi change hoti hai (jise dispatch ke zariye kiya ja sakta hai), tab useEffect chalega. Yeh ek powerful mechanism hai jo aapko Redux store ki state changes ko monitor karne aur uske mutabiq client-side behavior ko update karne mein madad karta hai. Dependency array mein dispatch ko include karke, aap useEffect ko specific events ke liye subscribe kar rahe hain. Isse aap apne component ko Redux store ke state ke sath sync mein rakh sakte hain, aur dynamic updates ke liye tayyar reh sakte hain jab bhi Redux store ki state badalti hai.
+    const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
+    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination }));
+  }, [dispatch, filter, sort, page]);
 
   useEffect(() => {
     setPage(1);
-  }, [totalItems, sort]); // yaha dependency array me sort isliye diya gaya hai kyuki user jab sorting karega to wo 1st page per chala jayega jo ki useEffect ke andar mentioned hai ....
+  }, [totalItems, sort]);
 
   useEffect(() => {
     dispatch(fetchBrandsAsync());
-    dispatch(fetchCategoriesAsync()); // json-server se data leke redux ki ProductSlice ki state me available categories array ko updat krna..
-  }, []); // jab page pehli baar load ho to json-server se categories aur brands pehli hi baar me load ho jaye..
+    dispatch(fetchCategoriesAsync());
+  }, []);
 
   return (
     <div>
@@ -448,7 +449,7 @@ function ProductGrid({ products, status }) {
 
                   <div>
                     <p className="text-sm font-medium text-gray-900">
-                      $ {discountedPrice(product)}
+                      $ {product.discountPrice}
                     </p>
                     <p className="text-sm font-medium text-gray-400 line-through">
                       ${product.price}

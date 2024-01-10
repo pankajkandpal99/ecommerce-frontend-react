@@ -15,10 +15,9 @@ export const addToCart = (item) => {
 
 export function fetchItemsByUserId() {
   return new Promise(async (resolve) => {
-    //TODO: we will not hard-code server URL here
-    const response = await fetch("/cart");  
+    const response = await fetch("/cart");
     const data = await response.json();
-    // console.log(data); 
+    // console.log(data);
     resolve({ data });
   });
 }
@@ -51,17 +50,21 @@ export function deleteItemFromCart(itemId) {
   });
 }
 
-export function resetCart() {              // get all items of user's cart and then delete each.
-  return new Promise(async (resolve) => {
-    const response = await fetchItemsByUserId();
-    const items = response.data; 
-    console.log(items);
+export async function resetCart() {
+  try {
+    const itemsResponse = await fetchItemsByUserId();
+    const items = itemsResponse.data;
 
-    for (let item of items) {
-      const deletedItem = await deleteItemFromCart(item.id); 
-      console.log(deletedItem);
-    }
+    // Use Promise.all to wait for all delete operations to complete
+    await Promise.all(
+      items.map(async (item) => {
+        await deleteItemFromCart(item.id);
+      })
+    );
 
-    resolve({ status: "success" });
-  });
+    return { status: "success" };
+  } catch (error) {
+    console.error("Error resetting cart:", error);
+    throw error; // Propagate the error
+  }
 }

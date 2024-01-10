@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -6,8 +7,13 @@ import {
   selectError,
   selectPasswordReset,
 } from "../authSlice";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
 
 function ResetPassword() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordValue, setPasswordValue] = useState(null);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState(null);
   const dispatch = useDispatch();
   const error = useSelector(selectError);
   const passwordReset = useSelector(selectPasswordReset);
@@ -17,9 +23,6 @@ function ResetPassword() {
   const token = query.get("token");
   const email = query.get("email");
 
-  //   console.log(email);
-  //   console.log(token);
-
   const {
     register,
     handleSubmit,
@@ -27,6 +30,24 @@ function ResetPassword() {
   } = useForm();
 
   //   console.log(errors);
+  //   console.log(email);
+  //   console.log(token);
+
+  const handlePasswordChange = (event) => {
+    setPasswordValue(event.target.value);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPasswordValue(event.target.value);
+  };
+
+  const handlePasswordShow = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
+  const handleConfirmPasswordShow = () => {
+    setShowConfirmPassword((prevState) => !prevState);
+  };
 
   return (
     <>
@@ -63,7 +84,7 @@ function ResetPassword() {
                     New Password
                   </label>
                 </div>
-                <div className="mt-2">
+                <div className="relative mt-2">
                   <input
                     id="password"
                     {...register("password", {
@@ -76,9 +97,24 @@ function ResetPassword() {
                       - Can contain special characters`,
                       },
                     })}
-                    type="password"
+                    type={showPassword ? "text" : "password"}
+                    onChange={handlePasswordChange}
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
+                  {passwordValue && (
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 px-4 text-gray-600"
+                      onClick={handlePasswordShow}
+                    >
+                      {showPassword ? (
+                        <EyeSlashIcon className="w-4 h-5 cursor-pointer" />
+                      ) : (
+                        <EyeIcon className="w-4 h-5 cursor-pointer" />
+                      )}
+                    </button>
+                  )}
+
                   {errors.password && (
                     <p className="text-red-500">{errors.password.message}</p>
                   )}
@@ -94,7 +130,7 @@ function ResetPassword() {
                     Confirm New Password
                   </label>
                 </div>
-                <div className="mt-2">
+                <div className="relative mt-2">
                   <input
                     id="confirmPassword"
                     {...register("confirmPassword", {
@@ -103,25 +139,38 @@ function ResetPassword() {
                         value === formValues.password ||
                         "password not matching",
                     })} // The validation checks whether the value of the confirmPassword field matches the value of the password field. If it doesn't match, an error message is returned ('password not matching'), which will be displayed in the <p> element with the class text-red-500 if there is an error.
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    onChange={handleConfirmPasswordChange}
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
-                  {errors.confirmPassword && (
-                    <p className="text-red-500">
-                      {errors.confirmPassword.message}
-                    </p>
-                  )}
-
-                  {passwordReset && (
-                    <p className="text-green-500">
-                      Your password successfully reset
-                    </p>
-                  )}
-
-                  {error && (
-                    <p className="text-red-500">Something went wrong!</p>
+                  {confirmPasswordValue && (
+                    <button
+                      type="button"
+                      className="absolute right-0 inset-y-0 px-4 text-gray-600"
+                      onClick={handleConfirmPasswordShow}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeSlashIcon className="w-4 h-5 cursor-pointer" />
+                      ) : (
+                        <EyeIcon className="w-4 h-5 cursor-pointer" />
+                      )}
+                    </button>
                   )}
                 </div>
+
+                {errors.confirmPassword && (
+                  <p className="text-red-500">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
+
+                {passwordReset && (
+                  <p className="text-green-500">
+                    Your password successfully reset
+                  </p>
+                )}
+
+                {error && <p className="text-red-500">Something went wrong!</p>}
               </div>
 
               <div>

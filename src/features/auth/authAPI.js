@@ -1,4 +1,3 @@
-// ye post request data.json file me jayegi. jisme hum backend ka server chala rahe hain temporary.
 export function createUser(userData) {
   return new Promise(async (resolve) => {
     const response = await fetch("/auth/signup", {
@@ -8,7 +7,6 @@ export function createUser(userData) {
     });
     const data = await response.json();
     // console.log(data);
-    //  TODO: on server it will only return relevant info of user (not password).
     resolve({ data });
   });
 }
@@ -40,7 +38,6 @@ export function loginUser(loginInfo) {
 
 // This is only fr checking--> is user session available or not?
 export function checkAuth() {
-  // console.log("request comes");
   return new Promise(async (resolve, reject) => {
     try {
       const response = await fetch("/auth/check");
@@ -54,8 +51,6 @@ export function checkAuth() {
     } catch (error) {
       reject(error);
     }
-
-    // TODO: on server it will only return some info of user (not password)
   });
 }
 
@@ -104,7 +99,7 @@ export function resetPasswordRequest(email) {
   });
 }
 
-// this is for change password api... ye user ka naya password leke server ko jayega aur server fir use database me jakar replace kar dega purane password se..
+// this is for change password api... ye user ka naya password leke server ko jayega aur server fir use database me jakar replace kar dega previous old password se..
 export function resetPassword(data) {
   return new Promise(async (resolve, reject) => {
     try {

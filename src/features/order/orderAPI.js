@@ -1,5 +1,5 @@
 export function createOrder(order) {
-  // console.log(order);
+  console.log(order);
   return new Promise(async (resolve) => {
     const response = await fetch("/orders", {
       method: "POST",
@@ -8,7 +8,7 @@ export function createOrder(order) {
     });
 
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     resolve({ data });
   });
 }
@@ -32,7 +32,6 @@ export function fetchAllOrders(sort, pagination) {
   // filter = {"category" : ["smartphone", "laptop"]}        // aane wala data kuchh iss tarah ka hoga..
   // sort = { _sort: "price", _order="desc"}
   // pagination = {_page: 1, _limit=10}
-  // TODO: on server we will support multi values
 
   let queryString = "";
   for (let key in pagination) {
@@ -46,7 +45,6 @@ export function fetchAllOrders(sort, pagination) {
   }
 
   return new Promise(async (resolve) => {
-    // TODO: we will not hard-code server url here...
     const response = await fetch("/orders?" + queryString);
 
     const data = await response.json();

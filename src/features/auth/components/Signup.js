@@ -2,8 +2,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { createUserAsync, selectLoggedInUser } from "../authSlice";
 import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
 
 export default function Signup() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordValue, setPasswordValue] = useState(null);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState(null);
   const user = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
   const {
@@ -11,6 +17,22 @@ export default function Signup() {
     handleSubmit,
     formState: { errors },
   } = useForm(); // useForm hook ek React hook hai jo react-hook-form library ke hisaab se banaya gaya hai. Iska use form handling ke liye hota hai, jisse aap apne React forms ko easily manage kar sakte hain.
+
+  const handlePasswordChange = (event) => {
+    setPasswordValue(event.target.value);
+  };
+
+  const handleConfirmPsswordChange = (event) => {
+    setConfirmPasswordValue(event.target.value);
+  };
+
+  const handlePasswordShow = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
+  const handleConfirmPasswordShow = () => {
+    setShowConfirmPassword((prevState) => !prevState);
+  };
 
   return (
     <>
@@ -38,8 +60,7 @@ export default function Signup() {
                   password: data.password,
                   addresses: [],
                   role: "user",
-                  // TODO: This role can be directly given on backend..
-                }) 
+                })
               );
               // console.log(data);
             })}
@@ -79,7 +100,7 @@ export default function Signup() {
                   Password
                 </label>
               </div>
-              <div className="mt-2">
+              <div className="relative mt-2">
                 <input
                   id="password"
                   {...register("password", {
@@ -92,9 +113,25 @@ export default function Signup() {
                       - Can contain special characters`,
                     },
                   })}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
+                  onChange={handlePasswordChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
+
+                {passwordValue && (
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 px-4 text-gray-600"
+                    onClick={handlePasswordShow}
+                  >
+                    {showPassword ? (
+                      <EyeSlashIcon className="w-4 h-5 cursor-pointer" />
+                    ) : (
+                      <EyeIcon className="w-4 h-5 cursor-pointer" />
+                    )}
+                  </button>
+                )}
+
                 {errors.password && (
                   <p className="text-red-500">{errors.password.message}</p>
                 )}
@@ -110,7 +147,7 @@ export default function Signup() {
                   Confirm Password
                 </label>
               </div>
-              <div className="mt-2">
+              <div className="relative mt-2">
                 <input
                   id="confirmPassword"
                   {...register("confirmPassword", {
@@ -118,9 +155,23 @@ export default function Signup() {
                     validate: (value, formValues) =>
                       value === formValues.password || "password not matching",
                   })} // The validation checks whether the value of the confirmPassword field matches the value of the password field. If it doesn't match, an error message is returned ('password not matching'), which will be displayed in the <p> element with the class text-red-500 if there is an error.
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  onChange={handleConfirmPsswordChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
+                {confirmPasswordValue && (
+                  <button
+                    type="button"
+                    className="absolute right-0 inset-y-1 px-4 text-gray-600"
+                    onClick={handleConfirmPasswordShow}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeSlashIcon className="w-4 h-5 cursor-pointer" />
+                    ) : (
+                      <EyeIcon className="w-4 h-5 cursor-pointer" />
+                    )}
+                  </button>
+                )}
                 {errors.confirmPassword && (
                   <p className="text-red-500">
                     {errors.confirmPassword.message}

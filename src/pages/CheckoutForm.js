@@ -12,7 +12,7 @@ export default function CheckoutForm() {
   const elements = useElements();
   const currentOrder = useSelector(selectCurrentOrder);
 
-  // console.log(currentOrder);
+  console.log(currentOrder);
 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,8 +62,8 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `https://mern-ecommerce-rho-eight.vercel.app/order-success/${currentOrder.id}`,
-      },     // after payment successfull redirect to this url ...
+        return_url: `https://mern-ecommerce-lac.vercel.app/order-success/${currentOrder.id}`,
+      }, // after payment successfull redirect to this url ...
     });
 
     // This point will only be reached if there is an immediate error when
@@ -85,15 +85,26 @@ export default function CheckoutForm() {
   };
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-      <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <button disabled={isLoading || !stripe || !elements} id="submit">
-        <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
-        </span>
-      </button>
-      {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
-    </form>
+    <>
+      {currentOrder.totalAmount && (
+        <form id="payment-form" onSubmit={handleSubmit}>
+          <PaymentElement
+            id="payment-element"
+            options={paymentElementOptions}
+          />
+          <button disabled={isLoading || !stripe || !elements} id="submit">
+            <span id="button-text">
+              {isLoading ? (
+                <div className="spinner" id="spinner"></div>
+              ) : (
+                "Pay now"
+              )}
+            </span>
+          </button>
+          {/* Show any error or success messages */}
+          {message && <div id="payment-message">{message}</div>}
+        </form>
+      )}
+    </>
   );
 }

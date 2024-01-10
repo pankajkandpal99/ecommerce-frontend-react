@@ -2,19 +2,33 @@ import { useSelector, useDispatch } from "react-redux";
 import { loginUserAsync, selectError, selectLoggedInUser } from "../authSlice";
 import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import {
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/react/20/solid";
 
 function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [value, setValue] = useState(null);
   const error = useSelector(selectError);
   const user = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
-
-  // console.log(user);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(); 
+  } = useForm();
+
+  // console.log(user);
+
+  const handleChange = (event) => {
+    setValue(event.target.value);   
+  };
+
+  const handleShow = () => {
+    setShowPassword((prevState) => !prevState);
+  }
 
   return (
     <>
@@ -86,16 +100,29 @@ function Login() {
                   </Link>
                 </div>
               </div>
-              <div className="mt-2">
+              <div className="relative mt-2">
                 <input
                   id="password"
                   name="password"
                   {...register("password", {
                     required: "password is required",
                   })}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
+                  onChange={handleChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
+
+                {value && <button
+                  type="button"
+                  className="absolute inset-y-0 right-1 flex items-center px-2 focus:outline-none"
+                  onClick={handleShow}
+                >
+                  {showPassword ? (
+                    <EyeSlashIcon className="w-4 h-6 cursor-pointer text-gray-500" />
+                  ) : (
+                    <EyeIcon className="w-4 h-6 cursor-pointer text-gray-500"></EyeIcon>
+                  )}
+                </button>}
                 {errors.password && (
                   <p className="text-red-500">{errors.password.message}</p>
                 )}

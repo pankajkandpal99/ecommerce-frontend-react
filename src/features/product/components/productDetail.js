@@ -9,16 +9,8 @@ import {
 } from "../ProductSlice";
 import { useParams } from "react-router-dom";
 import { addToCartAsync, selectItems } from "../../cart/CartSlice";
-import { discountedPrice } from "../../../app/constants";
 import { useAlert } from "react-alert"; // this is alert-react library which is represent the alert notification messages in UI side...
 import { Grid } from "react-loader-spinner";
-
-const highlights = [
-  "Hand cut and sewn locally",
-  "Dyed with our proprietary colors",
-  "Pre-washed & pre-shrunk",
-  "Ultra-soft 100% cotton",
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -55,9 +47,8 @@ export default function ProductDetail() {
         newItem.size = selectedSize;
       }
 
-      dispatch(addToCartAsync(newItem));
-      // TODO: it will be based on server response if succeded then show sucess alert.
-      alert.success("Item added to your cart.");
+      dispatch(addToCartAsync({ item: newItem, alert }));
+      
     } else {
       console.log("item already available in your cart.");
       alert.error("Item already added!");
@@ -67,8 +58,8 @@ export default function ProductDetail() {
   // console.log(items);
 
   useEffect(() => {
-    dispatch(fetchProductByIdAsync(params.id)); // ye function ProductSlice.js file se import ho ri hai, aur fir usi ko function me ProductList file se jab hum product ke kisi item per click karte hain to waha se product.id params.id ke roop me eatract hokar nikal li jati hai jo fir fetchProductByIdAsync(params.id) function ke andar dispatch kara di jati hai jo ki ProductSlice ko bhej di jati hai aur fir ProductSlice ProductApi component ko call karke server se data fetch karta hai aur fir ProductSlice ko deta hai jo ki check karta hai ki aane wale data ki state fullfilled hai ya fir pending. aur agra fulfilled hai to use update kar diya jata hai aur fir store ko updated state de di jati hai jisse useSelector use access kar leta hai aur neeche file me product me map function chalakar use use kar liya jata hai...
-  }, [dispatch, params.id]); // jaise hi ProductDetailPage ko App.js dwara call lagayi jayegi ye useEffect hook chalega, aur fetchProductByIdAsync(params.id) function redux ko dispatch kar diya jayega fir ye function jo dispatch hua hai wo ProductSlice function ko call karega
+    dispatch(fetchProductByIdAsync(params.id));
+  }, [dispatch, params.id]);
 
   return (
     <div className="bg-white">
@@ -174,7 +165,7 @@ export default function ProductDetail() {
                 ${product.price}
               </p>
               <p className="text-3xl tracking-tight text-gray-900">
-                ${discountedPrice(product)}
+                ${product.discountPrice}
               </p>
 
               {/* Reviews */}

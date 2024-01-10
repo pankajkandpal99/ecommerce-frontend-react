@@ -11,19 +11,15 @@ const initialState = {
 export const createOrderAsync = createAsyncThunk(
   "order/createOrder",
   async (order) => {
-    // console.log(order);
     const response = await createOrder(order);
-    // console.log(response.data);
     return response.data;
   }
 );
 
-//  ye function database se sare orders fetch karke layega... aur databse se successfully data mil jane ke baad means ki promise fullfilled ho jane ke baad orders state me use push kar diya jayega aur fir AdminOrders wale component me use use kar liya jayega kyuki ye sare orders Admin ke page per show hone chiye jisse wo inn orders ke status ko easily change kar sake like 'pending', 'dispatched' etc..
 export const fetchAllOrdersAsync = createAsyncThunk(
   "order/fetchAllOrders",
   async ({ sort, pagination }) => {
     const response = await fetchAllOrders(sort, pagination);
-    // console.log(response.data);
     return response.data;
   }
 );
@@ -32,7 +28,6 @@ export const updateOrderAsync = createAsyncThunk(
   "order/updateOrder",
   async (order) => {
     const response = await updateOrder(order);
-    // console.log(response.data);
     return response.data;
   }
 );
@@ -58,7 +53,7 @@ export const orderSlice = createSlice({
       .addCase(createOrderAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.orders.push(action.payload);
-        state.currentOrder = action.payload; // Adjust based on your server response structure
+        state.currentOrder = action.payload; 
       })
       .addCase(fetchAllOrdersAsync.pending, (state) => {
         state.status = "loading";
@@ -84,6 +79,7 @@ export const orderSlice = createSlice({
 export const { resetOrder } = orderSlice.actions;
 export const selectCurrentOrder = (state) => state.order.currentOrder;
 export const selectAllOrders = (state) => state.order.orders;
-export const selectTotalOrders = (state) => state.order.totalOrders; // ye cheej pagination me lopp banane me help karega ki kitne page humko dikhane hain.
+export const selectTotalOrders = (state) => state.order.totalOrders;
+export const selectStatus = (state) => state.order.status;
 
 export default orderSlice.reducer;

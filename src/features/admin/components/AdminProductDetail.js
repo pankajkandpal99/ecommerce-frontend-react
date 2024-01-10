@@ -4,36 +4,13 @@ import { RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProductByIdAsync,
+  selectProductListStatus,
   selectedProductById,
 } from "../../product/ProductSlice";
 import { useParams } from "react-router-dom";
-import { addToCartAsync } from "../../cart/CartSlice";
-import { discountedPrice } from "../../../app/constants";
-
-// TODO : In Server data we will add color, sizes etc..
-const colors = [
-  { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
-  { name: "Gray", class: "bg-gray-200", selectedClass: "ring-gray-400" },
-  { name: "Black", class: "bg-gray-900", selectedClass: "ring-gray-900" },
-];
-
-const sizes = [
-  { name: "XXS", inStock: false },
-  { name: "XS", inStock: true },
-  { name: "S", inStock: true },
-  { name: "M", inStock: true },
-  { name: "L", inStock: true },
-  { name: "XL", inStock: true },
-  { name: "2XL", inStock: true },
-  { name: "3XL", inStock: true },
-];
-
-const highlights = [
-  "Hand cut and sewn locally",
-  "Dyed with our proprietary colors",
-  "Pre-washed & pre-shrunk",
-  "Ultra-soft 100% cotton",
-];
+import { addToCartAsync, selectItems } from "../../cart/CartSlice";
+import { useAlert } from "react-alert";
+import { Grid } from "react-loader-spinner";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -41,59 +18,91 @@ function classNames(...classes) {
 
 export default function AdminProductDetail() {
   const dispatch = useDispatch();
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
-  const [selectedSize, setSelectedSize] = useState(sizes[2]);
-  const product = useSelector(selectedProductById); // isme redux ke ProductSlice file se data iss component me load hoga fir tab jake isme neeche loop chalake data load kiya jayega
-  const params = useParams(); // jab url se iss component ko call kiya jayega to usme id ki jagah uss product ki id mentioned hogi jis roduct per click karke iss component ko call kiya ja ra hai. url se uss id ko extract karne ka kaam hi ye params hook karta hai jo ki react-router-dom ka hi part hai.
+  const [selectedColor, setSelectedColor] = useState();
+  const [selectedSize, setSelectedSize] = useState();
+  const items = useSelector(selectItems);
+  const product = useSelector(selectedProductById);
+  const status = useSelector(selectProductListStatus);
+  const params = useParams();
+  const alert = useAlert();
 
-  const handleCart = (event) => {
+  const handleCart = async (event) => {
     event.preventDefault();
-    const newItem = { ...product, quantity: 1 };
-    delete newItem["id"]; // This line deletes the "id" property from the newItem object. The reason for doing this might be to ensure that the "id" property does not interfere with the process of adding the item to the cart.
-    dispatch(addToCartAsync(newItem)); // action ko dispatch kar diya, means action ko redux ko bhej diya. isme id mention nahi ki hai jise json ka server khud add karega.
+    // console.log('Add to Card');
+    const existingItemInCart = await items.findIndex(
+      (item) => item.product.id === product.id
+    );
+
+    if (existingItemInCart < 0) {
+      const newItem = {
+        product: product.id,
+        quantity: 1,
+      };
+
+      if (selectedColor) {
+        newItem.color = selectedColor;
+      }
+
+      if (selectedSize) {
+        newItem.size = selectedSize;
+      }
+
+      dispatch(addToCartAsync(newItem));
+    } else {
+      console.log("item already available in your cart.");
+      alert.error("Item already added!");
+    }
   };
 
   // console.log(items);
 
   useEffect(() => {
-    dispatch(fetchProductByIdAsync(params.id)); // ye function ProductSlice.js file se import ho ri hai, aur fir usi ko function me ProductList file se jab hum product ke kisi item per click karte hain to waha se product.id params.id ke roop me eatract hokar nikal li jati hai jo fir fetchProductByIdAsync(params.id) function ke andar dispatch kara di jati hai jo ki ProductSlice ko bhej di jati hai aur fir ProductSlice ProductApi component ko call karke server se data fetch karta hai aur fir ProductSlice ko deta hai jo ki check karta hai ki aane wale data ki state fullfilled hai ya fir pending. aur agra fulfilled hai to use update kar diya jata hai aur fir store ko updated state de di jati hai jisse useSelector use access kar leta hai aur neeche file me product me map function chalakar use use kar liya jata hai...
-  }, [dispatch, params.id]); // jaise hi ProductDetailPage ko App.js dwara call lagayi jayegi ye useEffect hook chalega, aur fetchProductByIdAsync(params.id) function redux ko dispatch kar diya jayega fir ye function jo dispatch hua hai wo ProductSlice function ko call karega
+    dispatch(fetchProductByIdAsync(params.id));
+  }, [dispatch, params.id]);
 
   return (
     <div className="bg-white">
+      {status === "loading" ? (
+        <Grid
+          height="80"
+          width=""
+          color="rgb(79, 70, 229)"
+          ariaLabel="grid-loading"
+          radius="12.5"
+          wrapperStyle={{}}
+          wrapperClass=""
+          visible={true}
+        />
+      ) : null}
       {product && (
         <div className="pt-6">
           <nav aria-label="Breadcrumb">
             <ol
-              // role="list"
+              role="list"
               className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
             >
-              {/* if product.breadcrumbs is present then this loop will be execute. */}
-              {product?.breadcrumbs?.map((breadcrumb) => {
-                console.log(breadcrumb);
-                return (
-                  <li key={breadcrumb.id}>
-                    <div className="flex items-center">
-                      <a
-                        href=""
-                        className="mr-2 text-sm font-medium text-gray-900"
-                      >
-                        {breadcrumb.title}
-                      </a>
-                      <svg
-                        width={16}
-                        height={20}
-                        viewBox="0 0 16 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                        className="h-5 w-4 text-gray-300"
-                      >
-                        <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                      </svg>
-                    </div>
-                  </li>
-                );
-              })}
+              {product?.breadcrumbs?.map((breadcrumb) => (
+                <li key={breadcrumb.id}>
+                  <div className="flex items-center">
+                    <a
+                      href=""
+                      className="mr-2 text-sm font-medium text-gray-900"
+                    >
+                      {breadcrumb.title}
+                    </a>
+                    <svg
+                      width={16}
+                      height={20}
+                      viewBox="0 0 16 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      className="h-5 w-4 text-gray-300"
+                    >
+                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
+                    </svg>
+                  </div>
+                </li>
+              ))}
               <li className="text-sm">
                 <a
                   href={product.href}
@@ -155,7 +164,7 @@ export default function AdminProductDetail() {
                 ${product.price}
               </p>
               <p className="text-3xl tracking-tight text-gray-900">
-                ${discountedPrice(product)}
+                ${product.discountPrice}
               </p>
 
               {/* Reviews */}
@@ -182,127 +191,133 @@ export default function AdminProductDetail() {
 
               <form className="mt-10">
                 {/* Colors */}
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">Color</h3>
+                {product.colors && product.colors.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900">Color</h3>
 
-                  <RadioGroup
-                    value={selectedColor}
-                    onChange={setSelectedColor}
-                    className="mt-4"
-                  >
-                    <RadioGroup.Label className="sr-only">
-                      Choose a color
-                    </RadioGroup.Label>
-                    <div className="flex items-center space-x-3">
-                      {colors?.map((color) => (
-                        <RadioGroup.Option
-                          key={color.name}
-                          value={color}
-                          className={({ active, checked }) =>
-                            classNames(
-                              color.selectedClass,
-                              active && checked ? "ring ring-offset-1" : "",
-                              !active && checked ? "ring-2" : "",
-                              "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none"
-                            )
-                          }
-                        >
-                          <RadioGroup.Label as="span" className="sr-only">
-                            {color.name}
-                          </RadioGroup.Label>
-                          <span
-                            aria-hidden="true"
-                            className={classNames(
-                              color.class,
-                              "h-8 w-8 rounded-full border border-black border-opacity-10"
-                            )}
-                          />
-                        </RadioGroup.Option>
-                      ))}
-                    </div>
-                  </RadioGroup>
-                </div>
+                    <RadioGroup
+                      value={selectedColor}
+                      onChange={setSelectedColor}
+                      className="mt-4"
+                    >
+                      <RadioGroup.Label className="sr-only">
+                        Choose a color
+                      </RadioGroup.Label>
+                      <div className="flex items-center space-x-3">
+                        {product?.colors?.map((color) => (
+                          <RadioGroup.Option
+                            key={color.name}
+                            value={color}
+                            className={({ active, checked }) =>
+                              classNames(
+                                color.selectedClass,
+                                active && checked ? "ring ring-offset-1" : "",
+                                !active && checked ? "ring-2" : "",
+                                "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none"
+                              )
+                            }
+                          >
+                            <RadioGroup.Label as="span" className="sr-only">
+                              {color.name}
+                            </RadioGroup.Label>
+                            <span
+                              aria-hidden="true"
+                              className={classNames(
+                                color.class,
+                                "h-8 w-8 rounded-full border border-black border-opacity-10"
+                              )}
+                            />
+                          </RadioGroup.Option>
+                        ))}
+                      </div>
+                    </RadioGroup>
+                  </div>
+                )}
 
                 {/* Sizes */}
-                <div className="mt-10">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                    <a
-                      href="#"
-                      className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                    >
-                      Size guide
-                    </a>
-                  </div>
-
-                  <RadioGroup
-                    value={selectedSize}
-                    onChange={setSelectedSize}
-                    className="mt-4"
-                  >
-                    <RadioGroup.Label className="sr-only">
-                      Choose a size
-                    </RadioGroup.Label>
-                    <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-                      {sizes?.map((size) => (
-                        <RadioGroup.Option
-                          key={size.name}
-                          value={size}
-                          disabled={!size.inStock}
-                          className={({ active }) =>
-                            classNames(
-                              size.inStock
-                                ? "cursor-pointer bg-white text-gray-900 shadow-sm"
-                                : "cursor-not-allowed bg-gray-50 text-gray-200",
-                              active ? "ring-2 ring-indigo-500" : "",
-                              "group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
-                            )
-                          }
-                        >
-                          {({ active, checked }) => (
-                            <>
-                              <RadioGroup.Label as="span">
-                                {size.name}
-                              </RadioGroup.Label>
-                              {size.inStock ? (
-                                <span
-                                  className={classNames(
-                                    active ? "border" : "border-2",
-                                    checked
-                                      ? "border-indigo-500"
-                                      : "border-transparent",
-                                    "pointer-events-none absolute -inset-px rounded-md"
-                                  )}
-                                  aria-hidden="true"
-                                />
-                              ) : (
-                                <span
-                                  aria-hidden="true"
-                                  className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                                >
-                                  <svg
-                                    className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
-                                    viewBox="0 0 100 100"
-                                    preserveAspectRatio="none"
-                                    stroke="currentColor"
-                                  >
-                                    <line
-                                      x1={0}
-                                      y1={100}
-                                      x2={100}
-                                      y2={0}
-                                      vectorEffect="non-scaling-stroke"
-                                    />
-                                  </svg>
-                                </span>
-                              )}
-                            </>
-                          )}
-                        </RadioGroup.Option>
-                      ))}
+                {product.sizes && product.sizes.length > 0 && (
+                  <div className="mt-10">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-medium text-gray-900">
+                        Size
+                      </h3>
+                      <a
+                        href="#"
+                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                      >
+                        Size guide
+                      </a>
                     </div>
-                  </RadioGroup>
-                </div>
+
+                    <RadioGroup
+                      value={selectedSize}
+                      onChange={setSelectedSize}
+                      className="mt-4"
+                    >
+                      <RadioGroup.Label className="sr-only">
+                        Choose a size
+                      </RadioGroup.Label>
+                      <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
+                        {product?.sizes?.map((size) => (
+                          <RadioGroup.Option
+                            key={size.name}
+                            value={size}
+                            disabled={!size.inStock}
+                            className={({ active }) =>
+                              classNames(
+                                size.inStock
+                                  ? "cursor-pointer bg-white text-gray-900 shadow-sm"
+                                  : "cursor-not-allowed bg-gray-50 text-gray-200",
+                                active ? "ring-2 ring-indigo-500" : "",
+                                "group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
+                              )
+                            }
+                          >
+                            {({ active, checked }) => (
+                              <>
+                                <RadioGroup.Label as="span">
+                                  {size.name}
+                                </RadioGroup.Label>
+                                {size.inStock ? (
+                                  <span
+                                    className={classNames(
+                                      active ? "border" : "border-2",
+                                      checked
+                                        ? "border-indigo-500"
+                                        : "border-transparent",
+                                      "pointer-events-none absolute -inset-px rounded-md"
+                                    )}
+                                    aria-hidden="true"
+                                  />
+                                ) : (
+                                  <span
+                                    aria-hidden="true"
+                                    className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                                  >
+                                    <svg
+                                      className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
+                                      viewBox="0 0 100 100"
+                                      preserveAspectRatio="none"
+                                      stroke="currentColor"
+                                    >
+                                      <line
+                                        x1={0}
+                                        y1={100}
+                                        x2={100}
+                                        y2={0}
+                                        vectorEffect="non-scaling-stroke"
+                                      />
+                                    </svg>
+                                  </span>
+                                )}
+                              </>
+                            )}
+                          </RadioGroup.Option>
+                        ))}
+                      </div>
+                    </RadioGroup>
+                  </div>
+                )}
 
                 <button
                   onClick={handleCart}
@@ -326,22 +341,26 @@ export default function AdminProductDetail() {
                 </div>
               </div>
 
-              <div className="mt-10">
-                <h3 className="text-sm font-medium text-gray-900">
-                  Highlights
-                </h3>
+              {product.highlights && (
+                <div className="mt-10">
+                  <h3 className="text-sm font-medium text-gray-900">
+                    Highlights
+                  </h3>
 
-                <div className="mt-4">
-                  <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                    {/* product.highlights && product.highlights.map((breadcrumb) => () */}
-                    {highlights?.map((highlight) => (
-                      <li key={highlight} className="text-gray-400">
-                        <span className="text-gray-600">{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="mt-4">
+                    <ul
+                      role="list"
+                      className="list-disc space-y-2 pl-4 text-sm"
+                    >
+                      {product.highlights?.map((highlight) => (
+                        <li key={highlight} className="text-gray-400">
+                          <span className="text-gray-600">{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="mt-10">
                 <h2 className="text-sm font-medium text-gray-900">Details</h2>

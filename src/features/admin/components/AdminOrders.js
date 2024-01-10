@@ -4,7 +4,7 @@ import {
   EyeIcon,
   PencilIcon,
 } from "@heroicons/react/24/outline";
-import { ITEMS_PER_PAGE, discountedPrice } from "../../../app/constants";
+import { ITEMS_PER_PAGE } from "../../../app/constants";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -32,6 +32,8 @@ const AdminOrders = () => {
       return newVisibility;
     });
   };
+
+  // console.log(orders);
 
   const handleShow = () => {
     console.log("handleShow");
@@ -198,7 +200,7 @@ const AdminOrders = () => {
                                 </div>
                                 <span>
                                   {item.product.title} - #{item.quantity} - $
-                                  {discountedPrice(item.product)}
+                                  {item.product.discountPrice}
                                 </span>
                               </div>
                             );

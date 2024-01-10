@@ -1,6 +1,6 @@
-export function fetchLoggedInUserOrders() {     // ye loggedInUser uss user se related sari information fetch kar lega jaise ki addresses, ordres etc..
+export function fetchLoggedInUserOrders() {    
   return new Promise(async (resolve) => {
-    const response = await fetch(`/orders/own`); // iss api se jitne bhi orders uss users ke hain wo sare aapke paas aa jayenge.
+    const response = await fetch(`/orders/own`); 
     const data = await response.json();
     // console.log(data);
     resolve({ data });

@@ -1,21 +1,37 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { resetCartAsync } from "../features/cart/CartSlice";
-import { resetOrder } from "../features/order/orderSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { resetCartAsync, selectItems } from "../features/cart/CartSlice";
+import { resetOrder, selectCurrentOrder } from "../features/order/orderSlice";
 
 const OrderSuccessPage = () => {
   const dispatch = useDispatch();
+  const items = useSelector(selectItems);
   const params = useParams();
 
-  // console.log(params.id);
 
   useEffect(() => {
-    // reset cart
-    dispatch(resetCartAsync());
-    // reset currentOrder
-    dispatch(resetOrder()); // resetOrder reducer inside the createSlice function...
+    const resetState = () => {
+      dispatch(resetCartAsync()); //reset cart
+      dispatch(resetOrder()); // reset order
+    };
+
+    let timeoutId;
+    timeoutId = setTimeout(resetState, 2000);
+
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => clearTimeout(timeoutId);
   }, [dispatch]);
+
+  // useEffect(() => {
+  //   // Reload the page after a short delay (e.g., 2000 milliseconds or 2 seconds)
+  //   const reloadTimeout = setTimeout(() => {
+  //     location.reload();
+  //   }, 2000);
+
+  //   // Clear the timeout if the component is unmounted before the timeout completes
+  //   return () => clearTimeout(reloadTimeout);
+  // }, []);
 
   return (
     <>
@@ -33,12 +49,14 @@ const OrderSuccessPage = () => {
             You can check your order in My Account > My Orders.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Link
-              to="/"
-              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Go back home
-            </Link>
+            {items.length === 0 && (
+              <Link
+                to="/"
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Go back home
+              </Link>
+            )}
           </div>
         </div>
       </main>
